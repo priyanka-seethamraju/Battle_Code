@@ -62,29 +62,44 @@ public strictfp class RobotPlayer {
         }
     }
 
+    static int minerCount = 0;
+
     static void runHQ() throws GameActionException {
-        for (Direction dir : directions)
-            tryBuild(RobotType.MINER, dir);
+        if(minerCount < 5){
+            for (Direction dir : directions)
+                if(tryBuild(RobotType.MINER, dir))
+                    minerCount++;
+        }
     }
 
     static void runMiner() throws GameActionException {
-        tryBlockchain();
-        tryMove(randomDirection());
-        if (tryMove(randomDirection()))
-            System.out.println("I moved!");
-        // tryBuild(randomSpawnedByMiner(), randomDirection());
-        for (Direction dir : directions)
-            tryBuild(RobotType.FULFILLMENT_CENTER, dir);
         for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
         for (Direction dir : directions)
             if (tryMine(dir))
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
+        tryBlockchain();
+        tryMove(randomDirection());
+        if (tryMove(randomDirection()))
+            System.out.println("I moved!");
+        // tryBuild(randomSpawnedByMiner(), randomDirection());
+        for (Direction dir : directions)
+            tryBuild(RobotType.REFINERY, dir);
+        for (Direction dir : directions)
+            tryBuild(RobotType.DESIGN_SCHOOL, dir);
+        //for (Direction dir : directions)
+            //tryBuild(RobotType.FULFILLMENT_CENTER, dir);
+        //for (Direction dir : directions)
+            //if (tryRefine(dir))
+                //System.out.println("I refined soup! " + rc.getTeamSoup());
+        //for (Direction dir : directions)
+            //if (tryMine(dir))
+                //System.out.println("I mined soup! " + rc.getSoupCarrying());
     }
 
     static void runRefinery() throws GameActionException {
-        // System.out.println("Pollution: " + rc.sensePollution(rc.getLocation()));
+        System.out.println("Pollution: " + rc.sensePollution(rc.getLocation()));
     }
 
     static void runVaporator() throws GameActionException {
@@ -92,7 +107,8 @@ public strictfp class RobotPlayer {
     }
 
     static void runDesignSchool() throws GameActionException {
-
+        for (Direction dir : directions)
+            tryBuild(RobotType.LANDSCAPER, dir);
     }
 
     static void runFulfillmentCenter() throws GameActionException {
@@ -101,7 +117,9 @@ public strictfp class RobotPlayer {
     }
 
     static void runLandscaper() throws GameActionException {
-
+        tryMove(randomDirection());
+        if (tryMove(randomDirection()))
+            System.out.println("I moved!");
     }
 
     static void runDeliveryDrone() throws GameActionException {
