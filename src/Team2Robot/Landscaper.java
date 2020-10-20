@@ -3,6 +3,61 @@ import battlecode.common.*;
 
 public class Landscaper extends RobotPlayer{
     static void runLandscaper() throws GameActionException {
+        // get transaction message to find location of hq
+        int num = rc.getRoundNum();
+        Transaction[] transaction = rc.getBlock(num -1);
+        if(!knowHQ){
+            for(Transaction t : transaction) {
+                int[] message = t.getMessage();
+                if(message[0] == 1){
+                    HQloc = new MapLocation(message[1], message[2]);
+                    knowHQ = true;
+                    System.out.println("HQ Location: " + message[1] + ", " + message[2]);
+                }
+            }
+        }
 
+        // move to hq if not already near it
+        if(!rc.getLocation().isAdjacentTo(HQloc)){
+            for (Direction dir : directions) {
+                Direction move = rc.getLocation().directionTo(HQloc);
+                if (tryMove(move))
+                    System.out.println("I moved!");
+                else {
+                    Direction left = move.rotateLeft();
+                    Direction right = move.rotateRight();
+                    if (tryMove(left))
+                        System.out.println("I moved!");
+                    else if (tryMove(right))
+                        System.out.println("I moved!");
+                }
+            }
+        }
+
+        // if the block on is already a wall then move
+        if(rc.senseElevation(rc.getLocation()) == rc.senseElevation(HQloc) + 3){
+            for (Direction dir : directions) {
+                if (tryMove(randomDirection()))
+                    System.out.println("I moved!");
+            }
+        }
+
+        // if near hq dig and deposit dirt around it to build wall
+        if(rc.getLocation().isAdjacentTo(HQloc)) {
+            if (rc.getDirtCarrying() < 3) {
+                if (rc.canDigDirt(rc.getLocation().directionTo(HQloc).opposite())) {
+                    System.out.println("I dug!");
+                    rc.digDirt(rc.getLocation().directionTo(HQloc).opposite());
+                }
+            }
+            if (rc.getDirtCarrying() == 3) {
+                if (rc.senseElevation(rc.getLocation()) < rc.senseElevation(HQloc) + 3) {
+                    if (rc.canDepositDirt(Direction.CENTER)) {
+                        System.out.println("I deposited!");
+                        rc.depositDirt(Direction.CENTER);
+                    }
+                }
+            }
+        }
     }
 }
