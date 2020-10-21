@@ -62,6 +62,15 @@ public strictfp class RobotPlayer {
         }
     }
 
+
+    static boolean knowHQ = false;
+    static MapLocation HQloc;
+    static int minerCount = 0;
+    static int refineryCount = 0;
+    static int designCount = 0;
+
+
+
     /**
      * Returns a random Direction.
      *
