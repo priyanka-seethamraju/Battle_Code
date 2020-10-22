@@ -3,9 +3,7 @@ import battlecode.common.*;
 
 public class HQ extends RobotPlayer{
     static void runHQ() throws GameActionException {
-        for (Direction dir : directions)
-            tryBuild(RobotType.MINER, dir);
-
+      
         if(!knowHQ){
             int[] message = new int[7];
             message[0] = 1; // this indicates that this message is just for HQ location
@@ -23,10 +21,8 @@ public class HQ extends RobotPlayer{
             for (Direction dir : directions)
                 if(tryBuild(RobotType.MINER, dir))
                     minerCount++;
-
         }
         System.out.println("The teams total soup is :"+rc.getTeamSoup());
         System.out.println("HQ Location Elevation: " + rc.senseElevation(rc.getLocation()));
-
     }
 }
