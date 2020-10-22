@@ -3,6 +3,86 @@ import battlecode.common.*;
 
 public class Landscaper extends RobotPlayer{
     static void runLandscaper() throws GameActionException {
+        //set wall height
+        if(rc.getRoundNum() > 677 && rc.getRoundNum() < 1210)
+            floodHeight = 5;
+        if(rc.getRoundNum() > 1211 && rc.getRoundNum() < 1771)
+            floodHeight = 10;
+        if(rc.getRoundNum() > 1772 && rc.getRoundNum() < 2143)
+            floodHeight = 25;
+        if(rc.getRoundNum() > 2144 && rc.getRoundNum() < 2348)
+            floodHeight = 50;
+        if(rc.getRoundNum() > 2349 && rc.getRoundNum() < 2524)
+            floodHeight = 100;
+        if(rc.getRoundNum() > 2525 && rc.getRoundNum() < 3019)
+            floodHeight = 1000;
 
+        // get transaction message to find location of hq
+        int num = rc.getRoundNum();
+        Transaction[] transaction = rc.getBlock(num -1);
+        if(!knowHQ){
+            for(Transaction t : transaction) {
+                int[] message = t.getMessage();
+                if(message[0] == 1){
+                    HQloc = new MapLocation(message[1], message[2]);
+                    knowHQ = true;
+                    System.out.println("HQ Location: " + message[1] + ", " + message[2]);
+                }
+            }
+        }
+
+        // move to hq if not already near it
+        if(!rc.getLocation().isAdjacentTo(HQloc)){
+            for (Direction dir : directions) {
+                Direction move = rc.getLocation().directionTo(HQloc);
+                if (tryMove(move))
+                    System.out.println("I moved!");
+                else {
+                    Direction left = move.rotateLeft();
+                    Direction right = move.rotateRight();
+                    if (tryMove(left))
+                        System.out.println("I moved!");
+                    else if (tryMove(right))
+                        System.out.println("I moved!");
+                }
+            }
+        }
+
+        // if the block on is already a wall then move
+        if(rc.senseElevation(rc.getLocation()) == rc.senseElevation(HQloc) + floodHeight){
+            for (Direction dir : directions) {
+                if (tryMove(randomDirection()))
+                    System.out.println("I moved!");
+            }
+        }
+
+        // if near hq dig and deposit dirt around it to build wall
+        if(rc.getLocation().isAdjacentTo(HQloc)) {
+            RobotInfo[] bots = rc.senseNearbyRobots();
+            for(int i = 0; i < bots.length; i++){
+                if(bots[i].team == rc.getTeam()){
+                    if(bots[i].dirtCarrying > 0 && bots[i].type == RobotType.HQ){
+                        if (rc.canDigDirt(rc.getLocation().directionTo(HQloc))) {
+                            System.out.println("I dug!");
+                            rc.digDirt(rc.getLocation().directionTo(HQloc));
+                        }
+                    }
+                }
+            }
+            if (rc.getDirtCarrying() < 3) {
+                if (rc.canDigDirt(rc.getLocation().directionTo(HQloc).opposite())) {
+                    System.out.println("I dug!");
+                    rc.digDirt(rc.getLocation().directionTo(HQloc).opposite());
+                }
+            }
+            if (rc.getDirtCarrying() == 3) {
+                if (rc.senseElevation(rc.getLocation()) < rc.senseElevation(HQloc) + floodHeight) {
+                    if (rc.canDepositDirt(Direction.CENTER)) {
+                        System.out.println("I deposited!");
+                        rc.depositDirt(Direction.CENTER);
+                    }
+                }
+            }
+        }
     }
 }

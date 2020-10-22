@@ -9,15 +9,6 @@ public class Miner extends RobotPlayer{
 
         tryBlockchain();
 
-        if (!refineryBuilt) {
-            for (Direction dir : directions)
-                if (tryBuild(RobotType.REFINERY, dir)) {
-                    refineryBuilt = true;
-                }
-        }
-        for (Direction dir: directions) {
-            tryBuild(RobotType.DESIGN_SCHOOL, dir);
-        }
         for (Direction dir : directions) {
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
@@ -28,6 +19,15 @@ public class Miner extends RobotPlayer{
         }
         if (tryMove(randomDirection())) {
             System.out.println("I moved!");
+        }
+        if (!refineryBuilt) {
+            for (Direction dir : directions)
+                if (tryBuild(RobotType.REFINERY, dir)) {
+                    refineryBuilt = true;
+                }
+        }
+        for (Direction dir: directions) {
+            tryBuild(RobotType.DESIGN_SCHOOL, dir);
         }
     }
 }
