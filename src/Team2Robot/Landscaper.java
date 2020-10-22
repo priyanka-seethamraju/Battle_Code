@@ -44,6 +44,17 @@ public class Landscaper extends RobotPlayer{
 
         // if near hq dig and deposit dirt around it to build wall
         if(rc.getLocation().isAdjacentTo(HQloc)) {
+            RobotInfo[] bots = rc.senseNearbyRobots();
+            for(int i = 0; i < bots.length; i++){
+                if(bots[i].team == rc.getTeam()){
+                    if(bots[i].dirtCarrying > 0 && bots[i].type == RobotType.HQ){
+                        if (rc.canDigDirt(rc.getLocation().directionTo(HQloc))) {
+                            System.out.println("I dug!");
+                            rc.digDirt(rc.getLocation().directionTo(HQloc));
+                        }
+                    }
+                }
+            }
             if (rc.getDirtCarrying() < 3) {
                 if (rc.canDigDirt(rc.getLocation().directionTo(HQloc).opposite())) {
                     System.out.println("I dug!");
