@@ -2,19 +2,32 @@ package Team2Robot;
 import battlecode.common.*;
 
 public class Miner extends RobotPlayer{
+
+    static boolean refineryBuilt = false;
+
     static void runMiner() throws GameActionException {
+
         tryBlockchain();
-        tryMove(randomDirection());
-        if (tryMove(randomDirection()))
-            System.out.println("I moved!");
-        // tryBuild(randomSpawnedByMiner(), randomDirection());
-        for (Direction dir : directions)
-            tryBuild(RobotType.FULFILLMENT_CENTER, dir);
-        for (Direction dir : directions)
+
+        if (!refineryBuilt) {
+            for (Direction dir : directions)
+                if (tryBuild(RobotType.REFINERY, dir)) {
+                    refineryBuilt = true;
+                }
+        }
+        for (Direction dir: directions) {
+            tryBuild(RobotType.DESIGN_SCHOOL, dir);
+        }
+        for (Direction dir : directions) {
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
-        for (Direction dir : directions)
+        }
+        for (Direction dir : directions) {
             if (tryMine(dir))
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
+        }
+        if (tryMove(randomDirection())) {
+            System.out.println("I moved!");
+        }
     }
 }
