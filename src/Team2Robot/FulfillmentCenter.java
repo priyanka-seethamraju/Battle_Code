@@ -4,6 +4,9 @@ import battlecode.common.*;
 public class FulfillmentCenter extends RobotPlayer{
     static void runFulfillmentCenter() throws GameActionException {
         for (Direction dir : directions)
-            tryBuild(RobotType.DELIVERY_DRONE, dir);
+            // Only build delivery bots if we have enough soup. If we have 500+ soup than we should have already built all our other bots
+            if(rc.getTeamSoup() >= 500){
+                tryBuild(RobotType.DELIVERY_DRONE, dir);
+            }
     }
 }
