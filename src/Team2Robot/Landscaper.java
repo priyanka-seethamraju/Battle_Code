@@ -3,19 +3,6 @@ import battlecode.common.*;
 
 public class Landscaper extends RobotPlayer{
     static void runLandscaper() throws GameActionException {
-        //set wall height
-        if(rc.getRoundNum() > 677 && rc.getRoundNum() < 1210)
-            floodHeight = 5;
-        if(rc.getRoundNum() > 1211 && rc.getRoundNum() < 1771)
-            floodHeight = 10;
-        if(rc.getRoundNum() > 1772 && rc.getRoundNum() < 2143)
-            floodHeight = 25;
-        if(rc.getRoundNum() > 2144 && rc.getRoundNum() < 2348)
-            floodHeight = 50;
-        if(rc.getRoundNum() > 2349 && rc.getRoundNum() < 2524)
-            floodHeight = 100;
-        if(rc.getRoundNum() > 2525 && rc.getRoundNum() < 3019)
-            floodHeight = 1000;
 
         // get transaction message to find location of hq
         int num = rc.getRoundNum();

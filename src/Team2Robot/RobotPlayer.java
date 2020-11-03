@@ -68,6 +68,9 @@ public strictfp class RobotPlayer {
     static int landscaperCount = 0;
     static int floodHeight = 3;
     static int droneCount = 0;
+    static boolean refineryBuilt = false;
+    static boolean fulfillmentBuilt = false;
+    static boolean designBuilt = false;
 
     /**
      * Returns a random Direction.
