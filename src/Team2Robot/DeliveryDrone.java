@@ -12,10 +12,22 @@ public class DeliveryDrone extends RobotPlayer{
                 // Pick up a first robot within range
                 rc.pickUpUnit(robots[0].getID());
                 System.out.println("I picked up " + robots[0].getID() + "!");
+                for (Direction dir : directions) {
+                    if (tryMove(dir)) {
+                        flooding = rc.senseFlooding(rc.getLocation());
+                        if (flooding && rc.canDropUnit(dir)) {
+
+                                rc.dropUnit(dir);
+                                System.out.println("I destroyed enemy robot");
+
+                        }
+                    }
+                }
+            } else {
+                // No close robots, so search for robots within sight radius
+                tryMove(randomDirection());
+
             }
-        } else {
-            // No close robots, so search for robots within sight radius
-            tryMove(randomDirection());
         }
     }
 }
