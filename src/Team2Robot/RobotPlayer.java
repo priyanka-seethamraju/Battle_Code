@@ -67,7 +67,6 @@ public strictfp class RobotPlayer {
     static int minerCount = 0;
     static int landscaperCount = 0;
     static int floodHeight = 3;
-    static boolean flooding = false ;
 
     /**
      * Returns a random Direction.
