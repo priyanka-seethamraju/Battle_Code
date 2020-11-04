@@ -86,8 +86,33 @@ public class Miner extends RobotPlayer{
             }
 
         }
+
+          if(!fulfillmentBuilt) {
+            if(!rc.getLocation().isAdjacentTo(HQloc)) {
+                for (Direction dir : directions) {
+                    MapLocation loc = rc.getLocation().add(dir);
+                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                        if (rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, dir) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                            // send message that it is built
+                            //System.out.println("I built a Fulfillment!");
+                            int[] message = new int[7];
+                            message[0] = 4;
+                            message[1] = 0;
+                            message[2] = 0;
+                            message[3] = 0;
+                            message[4] = 0;
+                            message[5] = 0;
+                            message[6] = 0;
+
+                            rc.submitTransaction(message, 1);
+                        }
+                    }
+                }
+            }
+        }
+
         // build refinery if not already built
-        if (!refineryBuilt) {
+        else if (!refineryBuilt) {
             if(!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
                     MapLocation loc = rc.getLocation().add(dir);
@@ -135,29 +160,7 @@ public class Miner extends RobotPlayer{
             }
         }
         // build fulfillment center
-        else if(!fulfillmentBuilt) {
-            if(!rc.getLocation().isAdjacentTo(HQloc)) {
-                for (Direction dir : directions) {
-                    MapLocation loc = rc.getLocation().add(dir);
-                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
-                        if (rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, dir) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
-                            // send message that it is built
-                            //System.out.println("I built a Fulfillment!");
-                            int[] message = new int[7];
-                            message[0] = 4;
-                            message[1] = 0;
-                            message[2] = 0;
-                            message[3] = 0;
-                            message[4] = 0;
-                            message[5] = 0;
-                            message[6] = 0;
 
-                            rc.submitTransaction(message, 1);
-                        }
-                    }
-                }
-            }
-        }
 
     }
 }
