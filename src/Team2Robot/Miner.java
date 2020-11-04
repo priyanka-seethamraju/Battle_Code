@@ -8,7 +8,7 @@ public class Miner extends RobotPlayer{
     static boolean fulfillmentBuilt = false;
 
     static void runMiner() throws GameActionException {
-        // get transaction message to find location of hq
+        // get transaction message to find location of hq, if buildings have been built
         int num = rc.getRoundNum();
         for(int i = 1; i < num; i++){
             Transaction[] transaction = rc.getBlock(num - i);
@@ -34,13 +34,16 @@ public class Miner extends RobotPlayer{
             }
         }
 
+        // if carrying soup then refine it
         if(rc.getSoupCarrying() > 25){
             for (Direction dir : directions) {
+                //refines at hq
                 if (rc.getLocation().isAdjacentTo(HQloc)) {
                     if (tryRefine(dir))
                         System.out.println("I refined soup! " + rc.getTeamSoup());
 
                 }
+                // if not near hq then head towards it
                 else{
                     Direction move = rc.getLocation().directionTo(HQloc);
                     if (rc.canMove(move) && tryMove(move))
@@ -57,6 +60,7 @@ public class Miner extends RobotPlayer{
             }
         }
         else{
+            // sense soup to mine, if near then refine, else head towards it
             MapLocation[] soup = rc.senseNearbySoup();
             for(int i = 0; i < soup.length; i++){
                 if(rc.getLocation().isAdjacentTo(soup[i])) {
@@ -82,13 +86,15 @@ public class Miner extends RobotPlayer{
             }
 
         }
+        // build refinery if not already built
         if (!refineryBuilt) {
             if(!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
                     MapLocation loc = rc.getLocation().add(dir);
-                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0){
+                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)){
+                        // send message if refinery built
                         if (rc.canBuildRobot(RobotType.REFINERY, dir) && tryBuild(RobotType.REFINERY, dir)) {
-                            System.out.println("I built a Refinery!");
+                            //System.out.println("I built a Refinery!");
                             int[] message = new int[7];
                             message[0] = 2;
                             message[1] = 0;
@@ -100,17 +106,19 @@ public class Miner extends RobotPlayer{
 
                             rc.submitTransaction(message, 1);
                         }
-                    }
-                }
+                    }                }
+
             }
         }
+        // build design school
         else if (!designBuilt) {
             if(!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
                     MapLocation loc = rc.getLocation().add(dir);
-                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0) {
+                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
                         if (rc.canBuildRobot(RobotType.DESIGN_SCHOOL, dir) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                            System.out.println("I built a Design!");
+                            // send message that design school is built
+                            //System.out.println("I built a Design!");
                             int[] message = new int[7];
                             message[0] = 3;
                             message[1] = 0;
@@ -126,13 +134,15 @@ public class Miner extends RobotPlayer{
                 }
             }
         }
+        // build fulfillment center
         else if(!fulfillmentBuilt) {
             if(!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
                     MapLocation loc = rc.getLocation().add(dir);
-                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0) {
+                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
                         if (rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, dir) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
-                            System.out.println("I built a Fulfillment!");
+                            // send message that it is built
+                            //System.out.println("I built a Fulfillment!");
                             int[] message = new int[7];
                             message[0] = 4;
                             message[1] = 0;

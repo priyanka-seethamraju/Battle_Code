@@ -22,14 +22,14 @@ public class Landscaper extends RobotPlayer{
         if(!rc.getLocation().isAdjacentTo(HQloc)){
             for (Direction dir : directions) {
                 Direction move = rc.getLocation().directionTo(HQloc);
-                if (tryMove(move))
+                if (rc.canMove(move) && tryMove(move))
                     System.out.println("I moved!");
                 else {
                     Direction left = move.rotateLeft();
                     Direction right = move.rotateRight();
-                    if (tryMove(left))
+                    if (rc.canMove(left) && tryMove(left))
                         System.out.println("I moved!");
-                    else if (tryMove(right))
+                    else if (rc.canMove(right) && tryMove(right))
                         System.out.println("I moved!");
                 }
             }
@@ -38,7 +38,7 @@ public class Landscaper extends RobotPlayer{
         // if the block on is already a wall then move
         if(rc.senseElevation(rc.getLocation()) == rc.senseElevation(HQloc) + floodHeight){
             for (Direction dir : directions) {
-                if (tryMove(randomDirection()))
+                if (rc.canMove(randomDirection()) && tryMove(randomDirection()))
                     System.out.println("I moved!");
             }
         }
