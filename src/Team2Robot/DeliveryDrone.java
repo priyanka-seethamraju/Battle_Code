@@ -9,11 +9,47 @@ public class DeliveryDrone extends RobotPlayer{
         //System.out.println("Our team is :" + ourTeam);
         //System.out.println("delievry drone is currently holding unit" + rc.isCurrentlyHoldingUnit());
         //Pick up robots if the delivery drone is not currently holding units
+
+        int num = rc.getRoundNum();
+        Transaction[] transaction = rc.getBlock(num -1);
+        for(Transaction t : transaction) {
+            int[] message = t.getMessage();
+            if(message[0] == 6){
+                enemyHQloc = new MapLocation(message[1], message[2]);
+                knowEnemyHQ = true;
+                System.out.println("Enemy HQ Location: " + message[1] + ", " + message[2]);
+            }
+            if(message[0] == 7){
+                floodLoc = new MapLocation(message[1], message[2]);
+                knowFlood = true;
+            }
+        }
+
+        if(!knowEnemyHQ) {
+            RobotInfo[] r = rc.senseNearbyRobots();
+            for (int i = 0; i < r.length; i++) {
+                if (r[i].team == enemy) {
+                    if (r[i].type == RobotType.HQ) {
+                        int[] message = new int[7];
+                        message[0] = 6;
+                        message[1] = r[i].location.x;
+                        message[2] = r[i].location.y;
+                        message[3] = 0;
+                        message[4] = 0;
+                        message[5] = 0;
+                        message[6] = 0;
+
+                        rc.submitTransaction(message, 1);
+                    }
+                }
+            }
+        }
+
         if (!rc.isCurrentlyHoldingUnit() && rc.isReady()) {
             // See if there are any enemy robots within capturing range
-            RobotInfo[] robots = rc.senseNearbyRobots(GameConstants.DELIVERY_DRONE_PICKUP_RADIUS_SQUARED);
+            RobotInfo[] robots = rc.senseNearbyRobots();
             //Drop enemy robots onto flooded tiles
-            System.out.println("robots length:" + robots.length);
+            //System.out.println("robots length:" + robots.length);
             if (robots.length > 0) {
                 // Pick up a first robot within range
                 for (int i = 0; i < robots.length; i++) {
@@ -43,9 +79,18 @@ public class DeliveryDrone extends RobotPlayer{
                         break;
                 }
             }
-            for (Direction dir : directions) {
-                if (rc.canMove(dir) && tryMove(dir))
-                    System.out.println("I moved...");
+            if(knowEnemyHQ){
+                for(Direction dir : directions){
+                    Direction move = rc.getLocation().directionTo(enemyHQloc);
+                    if (rc.canMove(move) && tryMove(move))
+                        System.out.println("I moved!");
+                }
+            }
+            else{
+                for (Direction dir : directions) {
+                    if (rc.canMove(dir) && tryMove(dir))
+                        System.out.println("I moved...");
+                }
             }
         }
         // head towards flooded area to drop bots
@@ -53,12 +98,34 @@ public class DeliveryDrone extends RobotPlayer{
             for(Direction dir : directions) {
                 flooding = rc.senseFlooding(rc.getLocation());
                 if (flooding && rc.canDropUnit(dir)) {
-                    rc.dropUnit(dir);
+                    if(!knowFlood) {
+                        int[] message = new int[7];
+                        message[0] = 7;
+                        message[1] = rc.getLocation().x;
+                        message[2] = rc.getLocation().y;
+                        message[3] = 0;
+                        message[4] = 0;
+                        message[5] = 0;
+                        message[6] = 0;
+
+                        rc.submitTransaction(message, 1);
+                    }
+
+                    rc.dropUnit(dir.opposite());
                     System.out.println("I destroyed enemy robot");
                 }
             }
-            for (Direction dir : directions) {
-                tryMove(randomDirection());
+            if(knowFlood){
+                for (Direction dir : directions) {
+                    Direction move = rc.getLocation().directionTo(floodLoc);
+                    if (rc.canMove(move) && tryMove(move))
+                        System.out.println("I moved!");
+                }
+            }
+            else{
+                for (Direction dir : directions) {
+                    tryMove(randomDirection());
+                }
             }
         }
     }

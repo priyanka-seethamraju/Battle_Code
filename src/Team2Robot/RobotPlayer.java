@@ -69,6 +69,11 @@ public strictfp class RobotPlayer {
     static int floodHeight = 3;
     static boolean flooding = false;
     static int droneCount = 0;
+    static MapLocation enemyHQloc;
+    static boolean knowEnemyHQ = false;
+    static MapLocation floodLoc;
+    static boolean knowFlood = false;
+
     /**
      * Returns a random Direction.
      *
