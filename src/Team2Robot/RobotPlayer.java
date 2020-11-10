@@ -73,6 +73,10 @@ public strictfp class RobotPlayer {
     static boolean knowEnemyHQ = false;
     static MapLocation floodLoc;
     static boolean knowFlood = false;
+    static String job = "none";
+    static String lastJob = "none";
+    static String search = "0";
+    static int droneTurn = 0;
 
     /**
      * Returns a random Direction.
