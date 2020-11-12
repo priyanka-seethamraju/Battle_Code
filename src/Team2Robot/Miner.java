@@ -67,13 +67,14 @@ public class Miner extends RobotPlayer {
         } else {
             // sense soup to mine, if near then refine, else head towards it
             MapLocation[] soup = rc.senseNearbySoup();
-            for (int i = 0; i < soup.length; i++) {
-                if (rc.getLocation().isAdjacentTo(soup[i])) {
-                    if (rc.canMineSoup(soup[i].directionTo(soup[i])) && tryMine(soup[i].directionTo(soup[i]))) {
-                        System.out.println("I mined soup!");
-                    }
-                } else {
-                    for (Direction dir : directions) {
+            for(int i = 0; i < soup.length; i++){
+                if(rc.getLocation().isAdjacentTo(soup[i])) {
+                   if(rc.canMineSoup(soup[i].directionTo(soup[i])) && tryMine(soup[i].directionTo(soup[i]))){
+                       System.out.println("I mined soup!");
+                   }
+                }
+                else if(!rc.getLocation().isAdjacentTo(soup[i])){
+                    for (Direction dir : directions){
                         Direction move = rc.getLocation().directionTo(soup[i]);
                         if (rc.canMove(move) && tryMove(move))
                             System.out.println("I mined soup! " + rc.getSoupCarrying());
@@ -88,7 +89,10 @@ public class Miner extends RobotPlayer {
                     }
                 }
             }
-
+            for (Direction dir : directions) {
+                if (rc.canMove(dir) && tryMove(dir))
+                    System.out.println("I mined soup! " + rc.getSoupCarrying());
+            }
         }
 
         //builds vaporator
@@ -115,12 +119,12 @@ public class Miner extends RobotPlayer {
                 }
             }
 
-        } else {
-            if (!fulfillmentBuilt) {
-                if (!rc.getLocation().isAdjacentTo(HQloc)) {
+        else{
+            if(!fulfillmentBuilt) {
+                if(!rc.getLocation().isAdjacentTo(HQloc)) {
                     for (Direction dir : directions) {
                         MapLocation loc = rc.getLocation().add(dir);
-                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                        if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
                             if (rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, dir) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
                                 // send message that it is built
                                 //System.out.println("I built a Fulfillment!");
@@ -139,14 +143,12 @@ public class Miner extends RobotPlayer {
                     }
                 }
             }
-
-
             // build refinery if not already built
             else if (!refineryBuilt) {
-                if (!rc.getLocation().isAdjacentTo(HQloc)) {
+                if(!rc.getLocation().isAdjacentTo(HQloc)) {
                     for (Direction dir : directions) {
                         MapLocation loc = rc.getLocation().add(dir);
-                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                        if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)){
                             // send message if refinery built
                             if (rc.canBuildRobot(RobotType.REFINERY, dir) && tryBuild(RobotType.REFINERY, dir)) {
                                 //System.out.println("I built a Refinery!");
@@ -161,9 +163,8 @@ public class Miner extends RobotPlayer {
 
                                 rc.submitTransaction(message, 1);
                             }
-                        }
+                        }                
                     }
-
                 }
             }
             // build design school
@@ -190,8 +191,6 @@ public class Miner extends RobotPlayer {
                     }
                 }
             }
-
-
         }
     }
 }
