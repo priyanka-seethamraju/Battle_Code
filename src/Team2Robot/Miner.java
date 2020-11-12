@@ -1,7 +1,7 @@
 package Team2Robot;
 import battlecode.common.*;
 
-public class Miner extends RobotPlayer{
+public class Miner extends RobotPlayer {
 
     static boolean refineryBuilt = false;
     static boolean designBuilt = false;
@@ -11,24 +11,24 @@ public class Miner extends RobotPlayer{
     static void runMiner() throws GameActionException {
         // get transaction message to find location of hq, if buildings have been built
         int num = rc.getRoundNum();
-        for(int i = 1; i < num; i++){
+        for (int i = 1; i < num; i++) {
             Transaction[] transaction = rc.getBlock(num - i);
-            for(Transaction t : transaction) {
+            for (Transaction t : transaction) {
                 int[] message = t.getMessage();
-                if(message[0] == 1 && !knowHQ){
+                if (message[0] == 1 && !knowHQ) {
                     HQloc = new MapLocation(message[1], message[2]);
                     knowHQ = true;
                     //System.out.println("Miner knows HQ Location: " + message[1] + ", " + message[2]);
                 }
-                if(message[0] == 2){
+                if (message[0] == 2) {
                     refineryBuilt = true;
                     //System.out.println("Miner knows if Refinery Built: " + refineryBuilt);
                 }
-                if(message[0] == 3){
+                if (message[0] == 3) {
                     designBuilt = true;
                     //System.out.println("Miner knows if Design Built: " + designBuilt);
                 }
-                if(message[0] == 4){
+                if (message[0] == 4) {
                     fulfillmentBuilt = true;
                     //System.out.println("Miner knows if Fulfill Built: " + fulfillmentBuilt);
                 }
@@ -41,7 +41,7 @@ public class Miner extends RobotPlayer{
         }
 
         // if carrying soup then refine it
-        if(rc.getSoupCarrying() > 25){
+        if (rc.getSoupCarrying() > 25) {
             for (Direction dir : directions) {
                 //refines at hq
                 if (rc.getLocation().isAdjacentTo(HQloc)) {
@@ -50,7 +50,7 @@ public class Miner extends RobotPlayer{
 
                 }
                 // if not near hq then head towards it
-                else{
+                else {
                     Direction move = rc.getLocation().directionTo(HQloc);
                     if (rc.canMove(move) && tryMove(move))
                         System.out.println("I moved!");
@@ -64,8 +64,7 @@ public class Miner extends RobotPlayer{
                     }
                 }
             }
-        }
-        else{
+        } else {
             // sense soup to mine, if near then refine, else head towards it
             MapLocation[] soup = rc.senseNearbySoup();
             for(int i = 0; i < soup.length; i++){
@@ -119,7 +118,6 @@ public class Miner extends RobotPlayer{
                     }
                 }
             }
-        }
 
         else{
             if(!fulfillmentBuilt) {
@@ -145,7 +143,6 @@ public class Miner extends RobotPlayer{
                     }
                 }
             }
-
             // build refinery if not already built
             else if (!refineryBuilt) {
                 if(!rc.getLocation().isAdjacentTo(HQloc)) {
@@ -166,8 +163,8 @@ public class Miner extends RobotPlayer{
 
                                 rc.submitTransaction(message, 1);
                             }
-                        }                }
-
+                        }                
+                    }
                 }
             }
             // build design school
