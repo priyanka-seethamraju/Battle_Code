@@ -64,7 +64,8 @@ public class Miner extends RobotPlayer {
                     }
                 }
             }
-        } else {
+        }
+        else {
             // sense soup to mine, if near then refine, else head towards it
             MapLocation[] soup = rc.senseNearbySoup();
             for(int i = 0; i < soup.length; i++){
@@ -118,6 +119,7 @@ public class Miner extends RobotPlayer {
                     }
                 }
             }
+        }
 
         else{
             if(!fulfillmentBuilt) {

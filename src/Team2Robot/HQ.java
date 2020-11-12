@@ -17,7 +17,7 @@ public class HQ extends RobotPlayer{
             rc.submitTransaction(message,1);
         }
 
-        if(minerCount < 10){
+        if(minerCount < 5){
             for (Direction dir : directions)
                 if(tryBuild(RobotType.MINER, dir))
                     minerCount++;
