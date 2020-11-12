@@ -1,41 +1,47 @@
 package Team2Robot;
 import battlecode.common.*;
 
-public class Miner extends RobotPlayer{
+public class Miner extends RobotPlayer {
 
     static boolean refineryBuilt = false;
     static boolean designBuilt = false;
     static boolean fulfillmentBuilt = false;
+    static boolean vaporatorBuilt = false;
 
     static void runMiner() throws GameActionException {
         // get transaction message to find location of hq, if buildings have been built
         int num = rc.getRoundNum();
-        for(int i = 1; i < num; i++){
+        for (int i = 1; i < num; i++) {
             Transaction[] transaction = rc.getBlock(num - i);
-            for(Transaction t : transaction) {
+            for (Transaction t : transaction) {
                 int[] message = t.getMessage();
-                if(message[0] == 1 && !knowHQ){
+                if (message[0] == 1 && !knowHQ) {
                     HQloc = new MapLocation(message[1], message[2]);
                     knowHQ = true;
                     //System.out.println("Miner knows HQ Location: " + message[1] + ", " + message[2]);
                 }
-                if(message[0] == 2){
+                if (message[0] == 2) {
                     refineryBuilt = true;
                     //System.out.println("Miner knows if Refinery Built: " + refineryBuilt);
                 }
-                if(message[0] == 3){
+                if (message[0] == 3) {
                     designBuilt = true;
                     //System.out.println("Miner knows if Design Built: " + designBuilt);
                 }
-                if(message[0] == 4){
+                if (message[0] == 4) {
                     fulfillmentBuilt = true;
                     //System.out.println("Miner knows if Fulfill Built: " + fulfillmentBuilt);
+                }
+                if (message[0] == 5) {
+                    vaporatorBuilt = true;
+                    System.out.println("hi");
+                    //System.out.println("Miner knows if vaporator Built: " + vaporatorBuilt);
                 }
             }
         }
 
         // if carrying soup then refine it
-        if(rc.getSoupCarrying() > 25){
+        if (rc.getSoupCarrying() > 25) {
             for (Direction dir : directions) {
                 //refines at hq
                 if (rc.getLocation().isAdjacentTo(HQloc)) {
@@ -44,7 +50,7 @@ public class Miner extends RobotPlayer{
 
                 }
                 // if not near hq then head towards it
-                else{
+                else {
                     Direction move = rc.getLocation().directionTo(HQloc);
                     if (rc.canMove(move) && tryMove(move))
                         System.out.println("I moved!");
@@ -58,18 +64,16 @@ public class Miner extends RobotPlayer{
                     }
                 }
             }
-        }
-        else{
+        } else {
             // sense soup to mine, if near then refine, else head towards it
             MapLocation[] soup = rc.senseNearbySoup();
-            for(int i = 0; i < soup.length; i++){
-                if(rc.getLocation().isAdjacentTo(soup[i])) {
-                   if(rc.canMineSoup(soup[i].directionTo(soup[i])) && tryMine(soup[i].directionTo(soup[i]))){
-                       System.out.println("I mined soup!");
-                   }
-                }
-                else{
-                    for (Direction dir : directions){
+            for (int i = 0; i < soup.length; i++) {
+                if (rc.getLocation().isAdjacentTo(soup[i])) {
+                    if (rc.canMineSoup(soup[i].directionTo(soup[i])) && tryMine(soup[i].directionTo(soup[i]))) {
+                        System.out.println("I mined soup!");
+                    }
+                } else {
+                    for (Direction dir : directions) {
                         Direction move = rc.getLocation().directionTo(soup[i]);
                         if (rc.canMove(move) && tryMove(move))
                             System.out.println("I mined soup! " + rc.getSoupCarrying());
@@ -87,16 +91,17 @@ public class Miner extends RobotPlayer{
 
         }
 
-          if(!fulfillmentBuilt) {
-            if(!rc.getLocation().isAdjacentTo(HQloc)) {
+        //builds vaporator
+        if (!vaporatorBuilt) {
+            if (!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
                     MapLocation loc = rc.getLocation().add(dir);
-                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
-                        if (rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, dir) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                    if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                        if (rc.canBuildRobot(RobotType.VAPORATOR, dir) && tryBuild(RobotType.VAPORATOR, dir)) {
                             // send message that it is built
-                            //System.out.println("I built a Fulfillment!");
+                            //System.out.println("I built a Vaporator!");
                             int[] message = new int[7];
-                            message[0] = 4;
+                            message[0] = 5;
                             message[1] = 0;
                             message[2] = 0;
                             message[3] = 0;
@@ -109,58 +114,84 @@ public class Miner extends RobotPlayer{
                     }
                 }
             }
-        }
 
-        // build refinery if not already built
-        else if (!refineryBuilt) {
-            if(!rc.getLocation().isAdjacentTo(HQloc)) {
-                for (Direction dir : directions) {
-                    MapLocation loc = rc.getLocation().add(dir);
-                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)){
-                        // send message if refinery built
-                        if (rc.canBuildRobot(RobotType.REFINERY, dir) && tryBuild(RobotType.REFINERY, dir)) {
-                            //System.out.println("I built a Refinery!");
-                            int[] message = new int[7];
-                            message[0] = 2;
-                            message[1] = 0;
-                            message[2] = 0;
-                            message[3] = 0;
-                            message[4] = 0;
-                            message[5] = 0;
-                            message[6] = 0;
+        } else {
+            if (!fulfillmentBuilt) {
+                if (!rc.getLocation().isAdjacentTo(HQloc)) {
+                    for (Direction dir : directions) {
+                        MapLocation loc = rc.getLocation().add(dir);
+                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                            if (rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, dir) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                                // send message that it is built
+                                //System.out.println("I built a Fulfillment!");
+                                int[] message = new int[7];
+                                message[0] = 4;
+                                message[1] = 0;
+                                message[2] = 0;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
 
-                            rc.submitTransaction(message, 1);
-                        }
-                    }                }
-
-            }
-        }
-        // build design school
-        else if (!designBuilt) {
-            if(!rc.getLocation().isAdjacentTo(HQloc)) {
-                for (Direction dir : directions) {
-                    MapLocation loc = rc.getLocation().add(dir);
-                    if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
-                        if (rc.canBuildRobot(RobotType.DESIGN_SCHOOL, dir) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                            // send message that design school is built
-                            //System.out.println("I built a Design!");
-                            int[] message = new int[7];
-                            message[0] = 3;
-                            message[1] = 0;
-                            message[2] = 0;
-                            message[3] = 0;
-                            message[4] = 0;
-                            message[5] = 0;
-                            message[6] = 0;
-
-                            rc.submitTransaction(message, 1);
+                                rc.submitTransaction(message, 1);
+                            }
                         }
                     }
                 }
             }
+
+
+            // build refinery if not already built
+            else if (!refineryBuilt) {
+                if (!rc.getLocation().isAdjacentTo(HQloc)) {
+                    for (Direction dir : directions) {
+                        MapLocation loc = rc.getLocation().add(dir);
+                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                            // send message if refinery built
+                            if (rc.canBuildRobot(RobotType.REFINERY, dir) && tryBuild(RobotType.REFINERY, dir)) {
+                                //System.out.println("I built a Refinery!");
+                                int[] message = new int[7];
+                                message[0] = 2;
+                                message[1] = 0;
+                                message[2] = 0;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                rc.submitTransaction(message, 1);
+                            }
+                        }
+                    }
+
+                }
+            }
+            // build design school
+            else if (!designBuilt) {
+                if (!rc.getLocation().isAdjacentTo(HQloc)) {
+                    for (Direction dir : directions) {
+                        MapLocation loc = rc.getLocation().add(dir);
+                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                            if (rc.canBuildRobot(RobotType.DESIGN_SCHOOL, dir) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                                // send message that design school is built
+                                //System.out.println("I built a Design!");
+                                int[] message = new int[7];
+                                message[0] = 3;
+                                message[1] = 0;
+                                message[2] = 0;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                rc.submitTransaction(message, 1);
+                            }
+                        }
+                    }
+                }
+            }
+
+
         }
-        // build fulfillment center
-
-
     }
 }
