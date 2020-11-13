@@ -69,6 +69,15 @@ public strictfp class RobotPlayer {
     static int floodHeight = 3;
     static boolean flooding = false;
     static int droneCount = 0;
+    static MapLocation enemyHQloc;
+    static boolean knowEnemyHQ = false;
+    static MapLocation floodLoc;
+    static boolean knowFlood = false;
+    static String job = "none"; // current job for drone
+    static String lastJob = "none"; // last job for drone
+    static String search = "0"; // set search task to look for enemy hq
+    static int droneTurn = 0; // counts turns that drone is searching for enemies or cows
+
     /**
      * Returns a random Direction.
      *

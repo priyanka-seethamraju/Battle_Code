@@ -6,14 +6,14 @@ public class Landscaper extends RobotPlayer{
 
         // get transaction message to find location of hq
         int num = rc.getRoundNum();
-        Transaction[] transaction = rc.getBlock(num -1);
-        if(!knowHQ){
+        for(int i = 1; i < num; i++){
+            Transaction[] transaction = rc.getBlock(num - i);
             for(Transaction t : transaction) {
                 int[] message = t.getMessage();
-                if(message[0] == 1){
+                if(message[0] == 1 && !knowHQ){
                     HQloc = new MapLocation(message[1], message[2]);
                     knowHQ = true;
-                    System.out.println("HQ Location: " + message[1] + ", " + message[2]);
+                    //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
                 }
             }
         }
