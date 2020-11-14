@@ -7,6 +7,7 @@ public class Miner extends RobotPlayer {
     static boolean designBuilt = false;
     static boolean fulfillmentBuilt = false;
     static boolean vaporatorBuilt = false;
+    static boolean netGunBuilt = false;
 
     static void runMiner() throws GameActionException {
         // get transaction message to find location of hq, if buildings have been built
@@ -34,8 +35,13 @@ public class Miner extends RobotPlayer {
                 }
                 if (message[0] == 5) {
                     vaporatorBuilt = true;
-                    System.out.println("hi");
+                    //System.out.println("hi");
                     //System.out.println("Miner knows if vaporator Built: " + vaporatorBuilt);
+                }
+                if (message[0] == 8) {
+                    netGunBuilt = true;
+                    //System.out.println("hi");
+                    //System.out.println("Miner knows if netgun is Built: " + netGunBuilt);
                 }
             }
         }
@@ -180,6 +186,30 @@ public class Miner extends RobotPlayer {
                                 //System.out.println("I built a Design!");
                                 int[] message = new int[7];
                                 message[0] = 3;
+                                message[1] = 0;
+                                message[2] = 0;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                rc.submitTransaction(message, 1);
+                            }
+                        }
+                    }
+                }
+            }
+            // build netgun
+            else if (!netGunBuilt) {
+                if (!rc.getLocation().isAdjacentTo(HQloc)) {
+                    for (Direction dir : directions) {
+                        MapLocation loc = rc.getLocation().add(dir);
+                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                            if (rc.canBuildRobot(RobotType.NET_GUN, dir) && tryBuild(RobotType.NET_GUN, dir)) {
+                                // send message that design school is built
+                                //System.out.println("I built a Design!");
+                                int[] message = new int[7];
+                                message[0] = 8;
                                 message[1] = 0;
                                 message[2] = 0;
                                 message[3] = 0;
