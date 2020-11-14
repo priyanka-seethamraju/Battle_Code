@@ -9,7 +9,7 @@ apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'jacoco'
-apply plugin: 'application'
+
 
 jacoco {
     toolVersion = "0.8.5"
@@ -68,18 +68,11 @@ test {
     }
 }
 
-application {
-    mainClass = 'org.gradle.MyMain'
-}
 
-jacoco {
-    applyTo run
-}
 
-task applicationCodeCoverageReport(type:JacocoReport) {
-    executionData run
-    sourceSets sourceSets.main
-}
+
+
+
 
 
 
@@ -250,7 +243,9 @@ build.dependsOn('unpackClient')
 task run(type: JavaExec, dependsOn: 'build') {
     description 'Runs a match without starting the client.'
     group 'battlecode'
-
+    jacoco
+    jacocoTestReport
+    jacocoTestCoverageVerification
     main = 'battlecode.server.Main'
     classpath = sourceSets.main.runtimeClasspath
     args = ['-c=-']

@@ -29,6 +29,7 @@ public class MinerTest extends RobotPlayerTest {
      public  void testRunMiner() throws  GameActionException
     {
 
+
         assert minerobj.vaporatorBuilt = true;
     }
 
