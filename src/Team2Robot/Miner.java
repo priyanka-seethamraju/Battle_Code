@@ -225,4 +225,4 @@ public class Miner extends RobotPlayer {
             }
         }
     }
-}
+}}
