@@ -46,7 +46,7 @@ public class HQtest {
         message[6] = 0;
         when(rc.canSubmitTransaction(message,1)).thenReturn(true);
 
-
+        HQtest.takeTurn();
         HQtest.runHQ();
 
     }

@@ -26,25 +26,27 @@ public class DeliveryDroneTest {
 
     @Test
     public void testRunDeliveryDrone() throws GameActionException{
+        when(rc.getTeam()).thenReturn(Team.A);
+        when(rc.getTeam().opponent()).thenReturn(Team.B);
+        when(rc.getMapWidth()).thenReturn(10);
+        when(rc.getMapHeight()).thenReturn(10);
         MapLocation temp = new MapLocation(1,1);
-        when(rc.getType()).thenReturn(RobotType.HQ);
         when(rc.getLocation()).thenReturn(temp);
-        when(rc.getTeam()).thenReturn(Team.B);
-        when(rc.getID()).thenReturn(821);
-        when(rc.getRoundNum()).thenReturn(9);
-        when(rc.isReady()).thenReturn(true);
+        when(rc.senseFlooding(rc.getLocation())).thenReturn(true);
         int[] message = new int[7];
-        message[0] = 1; // this indicates that this message is just for HQ location
+        message[0] = 7;
         message[1] = rc.getLocation().x;
         message[2] = rc.getLocation().y;
         message[3] = 0;
         message[4] = 0;
         message[5] = 0;
         message[6] = 0;
-        when(rc.canSubmitTransaction(message,1)).thenReturn(true);
+        rc.submitTransaction(message, 1);
+        when(rc.getRoundNum()).thenReturn(8);
+        //when(rc.getBlock(7)).thenReturn(Transaction[] t);
 
-
-        DeliveryDroneTest.runDeliveryDrone();
+        //DeliveryDroneTest.takeTurn();
+        //DeliveryDroneTest.runDeliveryDrone();
 
     }
 
