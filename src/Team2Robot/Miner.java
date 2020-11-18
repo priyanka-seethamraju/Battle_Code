@@ -1,13 +1,21 @@
 package Team2Robot;
 import battlecode.common.*;
 
-public class Miner extends RobotPlayer {
+public class Miner extends Robot {
 
     static boolean refineryBuilt = false;
     static boolean designBuilt = false;
     static boolean fulfillmentBuilt = false;
     static boolean vaporatorBuilt = false;
     static boolean netGunBuilt = false;
+
+    public Miner(RobotController r){
+        super(r);
+    }
+
+    public void takeTurn() throws GameActionException {
+        runMiner();
+    }
 
     static void runMiner() throws GameActionException {
         // get transaction message to find location of hq, if buildings have been built
