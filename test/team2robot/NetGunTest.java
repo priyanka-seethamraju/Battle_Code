@@ -5,8 +5,8 @@ import battlecode.common.*;
 import team2robot.RobotPlayer;
 import org.junit.*;
 import org.mockito.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 
@@ -24,13 +24,19 @@ public class NetGunTest {
     }
 
     @Test
-    public void testRunNetGun() throws GameActionException{
+    public void testRunNetGunShoot() throws GameActionException{
         RobotInfo[] robots = {Mockito.mock(RobotInfo.class)};
         when(rc.senseNearbyRobots()).thenReturn(robots);
         when(rc.getTeam()).thenReturn(Team.A);
         when(rc.getTeam().opponent()).thenReturn(Team.B);
         when(rc.getType()).thenReturn(RobotType.DELIVERY_DRONE);
-        when(rc.getID()).thenReturn(999);
+        MapLocation temp = new MapLocation(5,5);
+        when(rc.getLocation()).thenReturn(temp);
+        when(rc.getID()).thenReturn(821);
+        when(rc.getRoundNum()).thenReturn(9);
+        when(rc.getTeamSoup()).thenReturn(400);
+        when(rc.isReady()).thenReturn(true);
+        when(rc.canShootUnit(821)).thenReturn(true);
 
         NetGunTest.takeTurn();
         NetGunTest.runNetGun();
@@ -43,7 +49,31 @@ public class NetGunTest {
         when(rc.getTeam()).thenReturn(Team.A);
         when(rc.getTeam().opponent()).thenReturn(Team.B);
         when(rc.getType()).thenReturn(RobotType.MINER);
-        when(rc.getID()).thenReturn(2);
+        MapLocation temp = new MapLocation(5,5);
+        when(rc.getLocation()).thenReturn(temp);
+        when(rc.getID()).thenReturn(821);
+        when(rc.getRoundNum()).thenReturn(9);
+        when(rc.getTeamSoup()).thenReturn(400);
+        when(rc.isReady()).thenReturn(true);
+        assertFalse(rc.canShootUnit(821));
+
+        NetGunTest.takeTurn();
+        NetGunTest.runNetGun();
+    }
+
+    @Test
+    public void testRunNetGun() throws GameActionException{
+        RobotInfo[] robots = {Mockito.mock(RobotInfo.class)};
+        when(rc.senseNearbyRobots()).thenReturn(robots);
+        when(rc.getTeam()).thenReturn(Team.A);
+        when(rc.getTeam().opponent()).thenReturn(Team.B);
+        when(rc.getType()).thenReturn(RobotType.DELIVERY_DRONE);
+        MapLocation temp = new MapLocation(5,5);
+        when(rc.getLocation()).thenReturn(temp);
+        when(rc.getID()).thenReturn(821);
+        when(rc.getRoundNum()).thenReturn(9);
+        when(rc.getTeamSoup()).thenReturn(400);
+        when(rc.isReady()).thenReturn(true);
 
         NetGunTest.takeTurn();
         NetGunTest.runNetGun();
