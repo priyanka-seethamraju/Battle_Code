@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -34,15 +35,30 @@ public class RefineryTest {
     }
 
     @Test
-    public void testRunRefinery() throws GameActionException{
+    public void testRunRefineryRefine() throws GameActionException{
         when(rc.getSoupCarrying()).thenReturn(25);
         MapLocation temp = new MapLocation(5,5);
         when(rc.getLocation()).thenReturn(temp);
         when(rc.sensePollution(temp)).thenReturn(200);
         for(Direction dir : directions ){
             when(rc.isReady()).thenReturn(true);
-            when(rc.canMineSoup(dir)).thenReturn(true);
-            rc.mineSoup(dir);
+            when(rc.canDepositSoup(dir)).thenReturn(true);
+            rc.depositSoup(dir,25);
+        }
+
+        RefineryTest.takeTurn();
+        RefineryTest.runRefinery();
+
+    }
+    @Test
+    public void testRunRefineryRefineNone() throws GameActionException{
+        when(rc.getSoupCarrying()).thenReturn(0);
+        MapLocation temp = new MapLocation(5,5);
+        when(rc.getLocation()).thenReturn(temp);
+        when(rc.sensePollution(temp)).thenReturn(200);
+        for(Direction dir : directions ){
+            when(rc.isReady()).thenReturn(true);
+            assertFalse(rc.canDepositSoup(dir));
         }
 
         RefineryTest.takeTurn();
