@@ -1,4 +1,4 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
 public class DesignSchool extends Robot{
@@ -12,16 +12,10 @@ public class DesignSchool extends Robot{
     }
 
     static void runDesignSchool() throws GameActionException {
-
-
-
-
         if(buildLandscaper()) {
             System.out.print("I built a landscaper!");
             System.out.print("landscaperCount is: " + landscaperCount);
         }
-
-
         /*
         for (Direction dir : directions) {
             if (landscaperCount < 2) {

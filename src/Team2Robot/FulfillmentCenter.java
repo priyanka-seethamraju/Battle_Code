@@ -1,4 +1,4 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
 public class FulfillmentCenter extends Robot{
@@ -10,7 +10,6 @@ public class FulfillmentCenter extends Robot{
     public void takeTurn() throws GameActionException {
         runFulfillmentCenter();
     }
-
 
     static void runFulfillmentCenter() throws GameActionException {
 
