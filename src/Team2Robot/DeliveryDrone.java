@@ -1,9 +1,18 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
 import java.util.Map;
 
-public class DeliveryDrone extends RobotPlayer{
+public class DeliveryDrone extends Robot{
+
+    public DeliveryDrone(RobotController r){
+        super(r);
+    }
+
+   public void takeTurn() throws GameActionException {
+        runDeliveryDrone();
+   }
+
     static void runDeliveryDrone() throws GameActionException {
         Team enemy = rc.getTeam().opponent();
         //System.out.println("enemy team is :" + enemy);

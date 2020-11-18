@@ -1,7 +1,16 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
-public class Landscaper extends RobotPlayer{
+public class Landscaper extends Robot{
+
+    public Landscaper(RobotController r){
+        super(r);
+    }
+
+    public void takeTurn() throws GameActionException {
+        runLandscaper();
+    }
+
     static void runLandscaper() throws GameActionException {
 
         // get transaction message to find location of hq
