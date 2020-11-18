@@ -1,4 +1,4 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
 public strictfp class RobotPlayer {
@@ -41,7 +41,7 @@ public strictfp class RobotPlayer {
                 // You can add the missing ones or rewrite this into your own control structure.
                 System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation());
                 switch (rc.getType()) {
-                    case HQ:                 HQ.runHQ();                break;
+                    case HQ:                 HQ.runHQ(rc);                break;
                     case MINER:              Miner.runMiner();             break;
                     case REFINERY:           Refinery.runRefinery();          break;
                     case VAPORATOR:          Vaporator.runVaporator();         break;

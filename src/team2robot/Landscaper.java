@@ -1,4 +1,4 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
 public class Landscaper extends RobotPlayer{

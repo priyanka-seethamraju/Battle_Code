@@ -1,4 +1,4 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
 public class Miner extends RobotPlayer {
@@ -225,4 +225,4 @@ public class Miner extends RobotPlayer {
             }
         }
     }
-}}
+}

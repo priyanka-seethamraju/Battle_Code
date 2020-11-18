@@ -1,10 +1,10 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
 
 public class HQ extends RobotPlayer{
-    static void runHQ() throws GameActionException {
-      
-        if(!knowHQ && rc.getRoundNum() <= 10){
+    static void runHQ(RobotController rc) throws GameActionException {
+
+        if(rc.getRoundNum() <= 10){
             int[] message = new int[7];
             message[0] = 1; // this indicates that this message is just for HQ location
             message[1] = rc.getLocation().x;

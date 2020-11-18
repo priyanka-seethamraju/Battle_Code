@@ -1,7 +1,5 @@
-package Team2Robot;
+package team2robot;
 import battlecode.common.*;
-
-import java.util.Map;
 
 public class DeliveryDrone extends RobotPlayer{
     static void runDeliveryDrone() throws GameActionException {
