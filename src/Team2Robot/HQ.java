@@ -26,13 +26,21 @@ public class HQ extends Robot{
             rc.submitTransaction(message,1);
         }
 
-        if(minerCount < 5){
-            for (Direction dir : directions)
-                if(tryBuild(RobotType.MINER, dir))
-                    minerCount++;
-        }
+        buildMiner();
+
         System.out.println("The teams total soup is :"+rc.getTeamSoup());
         System.out.println("HQ Location Elevation: " + rc.senseElevation(rc.getLocation()));
+    }
+
+    public static boolean buildMiner() throws GameActionException{
+        if(minerCount < 5){
+            for (Direction dir : directions)
+                if(tryBuild(RobotType.MINER, dir)) {
+                    minerCount++;
+                    return true;
+                }
+        }
+        return false;
     }
 
     public static boolean knowHQ() throws GameActionException {
