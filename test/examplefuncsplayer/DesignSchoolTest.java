@@ -93,4 +93,38 @@ public class DesignSchoolTest {
         DesignSchoolTest.landscaperCount = 2;
         assertEquals(false, DesignSchoolTest.buildLandscaper());
     }
+
+    @Test public void DesignSchoolTest_takeTurn() throws GameActionException{
+        MapLocation temp = new MapLocation(5,5);
+        when(rc.getType()).thenReturn(RobotType.DESIGN_SCHOOL);
+        when(rc.getLocation()).thenReturn(temp);
+        when(rc.getTeam()).thenReturn(Team.B);
+        when(rc.getID()).thenReturn(821);
+        when(rc.getRoundNum()).thenReturn(9);
+        when(rc.getTeamSoup()).thenReturn(400);
+        when(rc.senseElevation(rc.getLocation())).thenReturn(1);
+        when(rc.isReady()).thenReturn(true);
+        for(Direction dir : directions ){
+            when(rc.canBuildRobot(RobotType.LANDSCAPER, dir)).thenReturn(true);
+        }
+        System.out.println("Soup is " + rc.getTeamSoup());
+        DesignSchoolTest.takeTurn();
+    }
+    @Test public void DesignSchoolTest_runDesignSchool() throws GameActionException{
+        MapLocation temp = new MapLocation(5,5);
+        when(rc.getType()).thenReturn(RobotType.DESIGN_SCHOOL);
+        when(rc.getLocation()).thenReturn(temp);
+        when(rc.getTeam()).thenReturn(Team.B);
+        when(rc.getID()).thenReturn(821);
+        when(rc.getRoundNum()).thenReturn(9);
+        when(rc.getTeamSoup()).thenReturn(400);
+        when(rc.senseElevation(rc.getLocation())).thenReturn(1);
+        when(rc.isReady()).thenReturn(true);
+        for(Direction dir : directions ){
+            when(rc.canBuildRobot(RobotType.LANDSCAPER, dir)).thenReturn(true);
+        }
+        System.out.println("Soup is " + rc.getTeamSoup());
+
+        DesignSchoolTest.runDesignSchool();
+    }
 }
