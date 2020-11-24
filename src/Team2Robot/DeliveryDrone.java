@@ -37,44 +37,8 @@ public class DeliveryDrone extends Robot{
         // scan near team HQ to check for enemies
         enemiesAtHQ();
 
-        // set job to finding enemyHQ
-        if(!knowEnemyHQ){
-            job = "findHQ";
-        }
-
-        // set job to picking up cows or enemy
-        else if(knowEnemyHQ && !rc.isCurrentlyHoldingUnit()) {
-            if(lastJob == "dropping enemy"){
-                // change jobs if drone spends too much time looking for bot
-                if(droneTurn >= 15){
-                    droneTurn = 0;
-                    job = "pick up enemy";
-                    lastJob = "dropping cows";
-                }
-                else
-                    job = "pick up cows";
-            }
-            else {
-                // change jobs if drone spends too much time looking for bot
-                if(droneTurn >= 30){
-                    droneTurn = 0;
-                    job = "pick up cows";
-                    lastJob = "dropping enemy";
-                }
-                else
-                    job = "pick up enemy";
-            }
-        }
-
-        // set job to dropping cows or set job to dropping enemies
-        else if(knowEnemyHQ && rc.isCurrentlyHoldingUnit()){
-            if(lastJob == "pick up cows"){
-                job = "dropping cows";
-            }
-            else {
-                job = "dropping enemy";
-            }
-        }
+        //set job
+        setJob();
 
         // search for enemy hq
         if(job == "findHQ") {
@@ -283,6 +247,47 @@ public class DeliveryDrone extends Robot{
         }
     }
 
+    static void setJob(){
+        // set job to finding enemyHQ
+        if(!knowEnemyHQ){
+            job = "findHQ";
+        }
+
+        // set job to picking up cows or enemy
+        else if(knowEnemyHQ && !rc.isCurrentlyHoldingUnit()) {
+            if(lastJob == "dropping enemy"){
+                // change jobs if drone spends too much time looking for bot
+                if(droneTurn >= 15){
+                    droneTurn = 0;
+                    job = "pick up enemy";
+                    lastJob = "dropping cows";
+                }
+                else
+                    job = "pick up cows";
+            }
+            else {
+                // change jobs if drone spends too much time looking for bot
+                if(droneTurn >= 15){
+                    droneTurn = 0;
+                    job = "pick up cows";
+                    lastJob = "dropping enemy";
+                }
+                else
+                    job = "pick up enemy";
+            }
+        }
+
+        // set job to dropping cows or set job to dropping enemies
+        else if(knowEnemyHQ && rc.isCurrentlyHoldingUnit()){
+            if(lastJob == "pick up cows"){
+                job = "dropping cows";
+            }
+            else {
+                job = "dropping enemy";
+            }
+        }
+    }
+
     static void enemiesAtHQ() throws GameActionException {
         //System.out.println(rc.getLocation().distanceSquaredTo(HQloc));
         if(rc.getLocation().distanceSquaredTo(HQloc) <= 50) {
@@ -302,7 +307,7 @@ public class DeliveryDrone extends Robot{
         // Pick up a first robot within range
         for (int i = 0; i < robots.length; i++) {
             // make sure it is a bot we can pickup
-            if (robots[i].getTeam() != rc.getTeam() && robots[i].getType() == RobotType.MINER && robots[i].getType() == RobotType.LANDSCAPER) {
+            if (robots[i].getTeam() != rc.getTeam() && robots[i].getType() == RobotType.MINER || robots[i].getType() == RobotType.LANDSCAPER) {
                 // if sense the bot then reset drone turn counter and attempt to pick up
                 droneTurn = 0;
                 if (rc.canPickUpUnit(robots[i].getID())) {
