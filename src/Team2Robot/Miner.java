@@ -72,9 +72,36 @@ public class Miner extends team2robot.Robot {
             if (tryMove(dirToHQ))
                 System.out.println("I moved towards HQ");
         }
-        else if (tryMove(randomDirection()))
-            System.out.println("I Moved randomly");
-
+        else {
+            // sense soup to mine, if near then refine, else head towards it
+            MapLocation[] soup = rc.senseNearbySoup();
+            for(int i = 0; i < soup.length; i++){
+                if(rc.getLocation().isAdjacentTo(soup[i])) {
+                    if(rc.canMineSoup(soup[i].directionTo(soup[i])) && tryMine(soup[i].directionTo(soup[i]))){
+                        System.out.println("I mined soup!");
+                    }
+                }
+                else if(!rc.getLocation().isAdjacentTo(soup[i])){
+                    for (Direction dir : directions){
+                        Direction move = rc.getLocation().directionTo(soup[i]);
+                        if (rc.canMove(move) && tryMove(move))
+                            System.out.println("I mined soup! " + rc.getSoupCarrying());
+                        else {
+                            Direction left = move.rotateLeft();
+                            Direction right = move.rotateRight();
+                            if (rc.canMove(left) && tryMove(left))
+                                System.out.println("I moved!");
+                            else if (rc.canMove(right) && tryMove(right))
+                                System.out.println("I moved!");
+                        }
+                    }
+                }
+            }
+            for (Direction dir : directions) {
+                if (rc.canMove(dir) && tryMove(dir))
+                    System.out.println("I mined soup! " + rc.getSoupCarrying());
+            }
+        }
 
         // if carrying soup then refine it
         /*if (rc.getSoupCarrying() > 25) {
@@ -83,7 +110,6 @@ public class Miner extends team2robot.Robot {
                 if (rc.getLocation().isAdjacentTo(HQloc)) {
                     if (tryRefine(dir))
                         System.out.println("I refined soup! " + rc.getTeamSoup());
-
                 }
                 // if not near hq then head towards it
                 else {
@@ -201,7 +227,7 @@ public class Miner extends team2robot.Robot {
 
                                 rc.submitTransaction(message, 1);
                             }
-                        }                
+                        }
                     }
                 }
             }
