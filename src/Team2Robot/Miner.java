@@ -1,7 +1,7 @@
 package team2robot;
 import battlecode.common.*;
 
-public class Miner extends Robot {
+public class Miner extends team2robot.Robot {
 
     static boolean refineryBuilt = false;
     static boolean designBuilt = false;
@@ -53,9 +53,30 @@ public class Miner extends Robot {
                 }
             }
         }
+        if (HQloc == null) {
+            RobotInfo[] robots = rc.senseNearbyRobots();
+            for (RobotInfo robot : robots) {
+                if (robot.type == RobotType.HQ && robot.team == rc.getTeam()) {
+                    HQloc = robot.location;
+                    knowHQ = true;
+                }
+            }
+        }
+        for (Direction dir : directions)
+            if (tryRefine(dir))
+                System.out.println("I refined soup!" + rc.getTeamSoup());
+        for (Direction dir : directions)
+            if (tryMine(dir))
+                System.out.println("I mined soup!" + rc.getSoupCarrying());
+        if (rc.getSoupCarrying() == 100) {
+            Direction dirToHQ = rc.getLocation().directionTo(HQloc);
+            if (tryMove(dirToHQ))
+                System.out.println("I moved towards HQ!");
+        } else if (tryMove(randomDirection()))
+            System.out.println("I moved randomly!");
 
         // if carrying soup then refine it
-        if (rc.getSoupCarrying() > 25) {
+        /*if (rc.getSoupCarrying() < 25) {
             for (Direction dir : directions) {
                 //refines at hq
                 if (rc.getLocation().isAdjacentTo(HQloc)) {
@@ -78,8 +99,8 @@ public class Miner extends Robot {
                     }
                 }
             }
-        }
-        else {
+        }*/
+        /*else {
             // sense soup to mine, if near then refine, else head towards it
             MapLocation[] soup = rc.senseNearbySoup();
             for(int i = 0; i < soup.length; i++){
@@ -108,7 +129,7 @@ public class Miner extends Robot {
                 if (rc.canMove(dir) && tryMove(dir))
                     System.out.println("I mined soup! " + rc.getSoupCarrying());
             }
-        }
+        }*/
 
         //builds vaporator
         if (!vaporatorBuilt) {
