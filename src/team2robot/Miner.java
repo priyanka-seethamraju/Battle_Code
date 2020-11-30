@@ -115,7 +115,7 @@ public class Miner extends Robot {
             if (!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
                     MapLocation loc = rc.getLocation().add(dir);
-                    if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                    if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 9)) {
                         if (rc.canBuildRobot(RobotType.VAPORATOR, dir) && tryBuild(RobotType.VAPORATOR, dir)) {
                             // send message that it is built
                             //System.out.println("I built a Vaporator!");
@@ -140,7 +140,7 @@ public class Miner extends Robot {
                 if(!rc.getLocation().isAdjacentTo(HQloc)) {
                     for (Direction dir : directions) {
                         MapLocation loc = rc.getLocation().add(dir);
-                        if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                        if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 9)) {
                             if (rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, dir) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
                                 // send message that it is built
                                 //System.out.println("I built a Fulfillment!");
@@ -164,7 +164,7 @@ public class Miner extends Robot {
                 if(!rc.getLocation().isAdjacentTo(HQloc)) {
                     for (Direction dir : directions) {
                         MapLocation loc = rc.getLocation().add(dir);
-                        if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)){
+                        if(!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 9)){
                             // send message if refinery built
                             if (rc.canBuildRobot(RobotType.REFINERY, dir) && tryBuild(RobotType.REFINERY, dir)) {
                                 //System.out.println("I built a Refinery!");
@@ -188,7 +188,7 @@ public class Miner extends Robot {
                 if (!rc.getLocation().isAdjacentTo(HQloc)) {
                     for (Direction dir : directions) {
                         MapLocation loc = rc.getLocation().add(dir);
-                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 9)) {
                             if (rc.canBuildRobot(RobotType.DESIGN_SCHOOL, dir) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                                 // send message that design school is built
                                 //System.out.println("I built a Design!");
@@ -212,7 +212,7 @@ public class Miner extends Robot {
                 if (!rc.getLocation().isAdjacentTo(HQloc)) {
                     for (Direction dir : directions) {
                         MapLocation loc = rc.getLocation().add(dir);
-                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 5)) {
+                        if (!loc.isAdjacentTo(HQloc) && rc.senseSoup(loc) == 0 && !loc.isWithinDistanceSquared(HQloc, 9)) {
                             if (rc.canBuildRobot(RobotType.NET_GUN, dir) && tryBuild(RobotType.NET_GUN, dir)) {
                                 // send message that design school is built
                                 //System.out.println("I built a Design!");

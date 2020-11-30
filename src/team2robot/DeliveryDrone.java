@@ -312,9 +312,9 @@ public class DeliveryDrone extends Robot{
         if(rc.getLocation().distanceSquaredTo(HQloc) <= 50) {
             RobotInfo[] robots = rc.senseNearbyRobots();
             for (RobotInfo rb : robots) {
-                if (rb.team == rc.getTeam().opponent()) {
+                if (rb.getTeam() != rc.getTeam()) {
                     job = "pick up enemy";
-                    //System.out.println("ENEMY!!");
+                    System.out.println("ENEMY!!");
                 }
                 //else
                     //System.out.println("Not a enemy!");
@@ -326,7 +326,7 @@ public class DeliveryDrone extends Robot{
         // Pick up a first robot within range
         for (int i = 0; i < robots.length; i++) {
             // make sure it is a bot we can pickup
-            if (robots[i].getTeam() != rc.getTeam() && robots[i].getType() == RobotType.MINER || robots[i].getType() == RobotType.LANDSCAPER) {
+            if (robots[i].getTeam() != rc.getTeam() && (robots[i].getType() == RobotType.MINER || robots[i].getType() == RobotType.LANDSCAPER)) {
                 // if sense the bot then reset drone turn counter and attempt to pick up
                 droneTurn = 0;
                 if (rc.canPickUpUnit(robots[i].getID())) {
@@ -387,7 +387,7 @@ public class DeliveryDrone extends Robot{
                         rc.submitTransaction(message, 1);
                     }
 
-                    rc.dropUnit(randomDirection());
+                    rc.dropUnit(dir);
                     lastJob = "dropping enemy";
                     droneTurn = 0;
                     System.out.println("I destroyed enemy robot");
