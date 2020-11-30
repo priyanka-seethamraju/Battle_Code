@@ -1,10 +1,14 @@
 package team2robot;
 import battlecode.common.*;
 
+import java.util.ArrayList;
+
 public class Robot {
     static RobotController rc;
     //Communications comms;
     static int turnCount;
+    static int ls_count = 0;
+    static ArrayList<Integer> ls = new ArrayList<Integer>();
     static boolean knowHQ = false;
     static MapLocation HQloc = null;
     static int minerCount = 0;
