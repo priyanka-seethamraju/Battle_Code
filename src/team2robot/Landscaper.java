@@ -40,10 +40,56 @@ public class Landscaper extends Robot{
             }
         }
 
+        if(knowEnemyHQ && rc.getLocation().distanceSquaredTo(enemyHQloc) <= 50){
+            //System.out.println("k");
+            if (!rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                for (Direction dir : directions) {
+                    Direction move = rc.getLocation().directionTo(enemyHQloc);
+                    if (rc.canMove(move) && tryMove(move))
+                        System.out.println("I moved!");
+                    else {
+                        Direction left = move.rotateLeft();
+                        Direction right = move.rotateRight();
+                        if (rc.canMove(left) && tryMove(left))
+                            System.out.println("I moved!");
+                        else if (rc.canMove(right) && tryMove(right))
+                            System.out.println("I moved!");
+                    }
+                }
+            }
+
+            if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                RobotInfo[] bots = rc.senseNearbyRobots();
+                for (int i = 0; i < bots.length; i++) {
+
+                    if (bots[i].type == RobotType.HQ) {
+                        //System.out.println("I");
+                        if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
+                            //System.out.println("!");
+                            rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
+                        }
+                    }
+                }
+                if (rc.getDirtCarrying() < 3) {
+                    if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
+                        //System.out.println("!!");
+                        rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
+                    }
+                }
+                if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                    Direction dir = rc.getLocation().directionTo(enemyHQloc);
+                    if(rc.canDepositDirt(dir)) {
+                        //System.out.println("!!!");
+                        rc.depositDirt(dir);
+                    }
+                }
+            }
+        }
+
         //System.out.println("Two landscapers"+l +w);
         //System.out.println("landscaper id"+rc.getID());
-        if(rc.getLocation().distanceSquaredTo(HQloc) <= 50){
-        //if (l != rc.getID() && w!=rc.getID()) {
+        else {
+            //if (l != rc.getID() && w!=rc.getID()) {
             // move to hq if not already near it
             if (!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
@@ -94,52 +140,6 @@ public class Landscaper extends Robot{
                             System.out.println("I deposited!");
                             rc.depositDirt(Direction.CENTER);
                         }
-                    }
-                }
-            }
-        }
-
-        else if(rc.getLocation().distanceSquaredTo(enemyHQloc) <= 50){
-            //System.out.println("k");
-            if (!rc.getLocation().isAdjacentTo(enemyHQloc)) {
-                for (Direction dir : directions) {
-                    Direction move = rc.getLocation().directionTo(enemyHQloc);
-                    if (rc.canMove(move) && tryMove(move))
-                        System.out.println("I moved!");
-                    else {
-                        Direction left = move.rotateLeft();
-                        Direction right = move.rotateRight();
-                        if (rc.canMove(left) && tryMove(left))
-                            System.out.println("I moved!");
-                        else if (rc.canMove(right) && tryMove(right))
-                            System.out.println("I moved!");
-                    }
-                }
-            }
-
-            if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
-                RobotInfo[] bots = rc.senseNearbyRobots();
-                for (int i = 0; i < bots.length; i++) {
-
-                    if (bots[i].type == RobotType.HQ) {
-                        //System.out.println("I");
-                        if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
-                            //System.out.println("!");
-                            rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
-                        }
-                    }
-                }
-                if (rc.getDirtCarrying() < 3) {
-                    if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
-                        //System.out.println("!!");
-                        rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
-                    }
-                }
-                if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
-                    Direction dir = rc.getLocation().directionTo(enemyHQloc);
-                    if(rc.canDepositDirt(dir)) {
-                        //System.out.println("!!!");
-                        rc.depositDirt(dir);
                     }
                 }
             }
