@@ -45,12 +45,159 @@ public class DeliveryDrone extends Robot{
 
         // search for enemy hq
         if(job == "findHQ") {
-            // search first location
-            search1();
-            // search next location
-            search2();
-            // search last location
-            search3();
+            int height = rc.getMapHeight();
+            int width = rc.getMapWidth();
+
+            if(search == "0") {
+                // maplocation is opposite hq on the x axis
+                MapLocation tryHQ = new MapLocation(width - HQloc.x - 1, HQloc.y);
+                if((tryHQ.x >= 0 && tryHQ.x < width) && (tryHQ.y >= 0 && tryHQ.y < height)) {
+                    if (rc.getLocation().isAdjacentTo(tryHQ)) {
+                        RobotInfo[] r = rc.senseNearbyRobots();
+                        for (int i = 0; i < r.length; i++) {
+                            if (r[i].team == rc.getTeam().opponent() && r[i].type == RobotType.HQ) {
+                                // if found enemy hq send message
+                                int[] message = new int[7];
+                                message[0] = 6;
+                                message[1] = r[i].location.x;
+                                message[2] = r[i].location.y;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                search = "done";
+                                knowEnemyHQ = true;
+                                enemyHQloc = new MapLocation(r[i].location.x, r[i].location.y);
+
+                                rc.submitTransaction(message, 1);
+                            }
+                            else {
+                                search = "1";
+                            }
+                        }
+                        if(r.length == 0){
+                            search = "1";
+                        }
+                    } else {
+                        for (Direction dir : directions) {
+                            Direction move = rc.getLocation().directionTo(tryHQ);
+                            if (rc.canMove(move) && tryMove(move))
+                                System.out.println("I moved!");
+                            else {
+                                Direction left = move.rotateLeft();
+                                Direction right = move.rotateRight();
+                                if (rc.canMove(left) && tryMove(left))
+                                    System.out.println("I moved!");
+                                else if (rc.canMove(right) && tryMove(right))
+                                    System.out.println("I moved!");
+                            }
+                        }
+                    }
+                }
+                else
+                    search = "1";
+            }
+
+            if(search == "1") {
+                // maplocation is opposite on the diagonal x and y axis
+                MapLocation tryHQ = new MapLocation(width - HQloc.x - 1, height - HQloc.y - 1);
+                if((tryHQ.x >= 0 && tryHQ.x < width) && (tryHQ.y >= 0 && tryHQ.y < height)) {
+                    if (rc.getLocation().isAdjacentTo(tryHQ)) {
+                        RobotInfo[] r = rc.senseNearbyRobots();
+                        for (int i = 0; i < r.length; i++) {
+                            if (r[i].team == rc.getTeam().opponent() && r[i].type == RobotType.HQ) {
+                                int[] message = new int[7];
+                                message[0] = 6;
+                                message[1] = r[i].location.x;
+                                message[2] = r[i].location.y;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                search = "done";
+                                knowEnemyHQ = true;
+                                enemyHQloc = new MapLocation(r[i].location.x, r[i].location.y);
+
+                                rc.submitTransaction(message, 1);
+                            }
+                            else {
+                                search = "2";
+                            }
+                        }
+                        if(r.length == 0){
+                            search = "2";
+                        }
+                    } else {
+                        for (Direction dir : directions) {
+                            Direction move = rc.getLocation().directionTo(tryHQ);
+                            if (rc.canMove(move) && tryMove(move))
+                                System.out.println("I moved!");
+                            else {
+                                Direction left = move.rotateLeft();
+                                Direction right = move.rotateRight();
+                                if (rc.canMove(left) && tryMove(left))
+                                    System.out.println("I moved!");
+                                else if (rc.canMove(right) && tryMove(right))
+                                    System.out.println("I moved!");
+                            }
+                        }
+                    }
+                }
+                else
+                    search = "2";
+            }
+
+            if(search == "2") {
+                // maplocation is opposite hq on y axis
+                MapLocation tryHQ = new MapLocation(HQloc.x , height - HQloc.y - 1);
+                if((tryHQ.x >= 0 && tryHQ.x < width) && (tryHQ.y >= 0 && tryHQ.y < height)) {
+                    if (rc.getLocation().isAdjacentTo(tryHQ)) {
+                        RobotInfo[] r = rc.senseNearbyRobots();
+                        for (int i = 0; i < r.length; i++) {
+                            if (r[i].team == rc.getTeam().opponent() && r[i].type == RobotType.HQ) {
+                                int[] message = new int[7];
+                                message[0] = 6;
+                                message[1] = r[i].location.x;
+                                message[2] = r[i].location.y;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                search = "done";
+                                knowEnemyHQ = true;
+                                enemyHQloc = new MapLocation(r[i].location.x, r[i].location.y);
+
+                                rc.submitTransaction(message, 1);
+                            }
+                            else {
+                                search = "0";
+                            }
+                        }
+                        if(r.length == 0){
+                            search = "0";
+                        }
+                    } else {
+                        for (Direction dir : directions) {
+                            Direction move = rc.getLocation().directionTo(tryHQ);
+                            if (rc.canMove(move) && tryMove(move))
+                                System.out.println("I moved!");
+                            else {
+                                Direction left = move.rotateLeft();
+                                Direction right = move.rotateRight();
+                                if (rc.canMove(left) && tryMove(left))
+                                    System.out.println("I moved!");
+                                else if (rc.canMove(right) && tryMove(right))
+                                    System.out.println("I moved!");
+                            }
+                        }
+                    }
+                }
+                else
+                    search = "0";
+            }
         }
 
         // head to hq to find and pick up cows
@@ -104,175 +251,6 @@ public class DeliveryDrone extends Robot{
         // drop landscapers
         else if (job == "dropping landscapers"){
             dropLandscaper();
-        }
-    }
-
-    static void search1() throws GameActionException {
-        int height = rc.getMapHeight();
-        int width = rc.getMapWidth();
-
-        if(search == "0") {
-            // maplocation is opposite hq on the x axis
-            MapLocation tryHQ = new MapLocation(width - HQloc.x - 1, HQloc.y);
-            if((tryHQ.x >= 0 && tryHQ.x < width) && (tryHQ.y >= 0 && tryHQ.y < height)) {
-                if (rc.getLocation().isAdjacentTo(tryHQ)) {
-                    RobotInfo[] r = rc.senseNearbyRobots();
-                    for (int i = 0; i < r.length; i++) {
-                        if (r[i].team == rc.getTeam().opponent()) {
-                            if (r[i].type == RobotType.HQ) {
-                                // if found enemy hq send message
-                                int[] message = new int[7];
-                                message[0] = 6;
-                                message[1] = r[i].location.x;
-                                message[2] = r[i].location.y;
-                                message[3] = 0;
-                                message[4] = 0;
-                                message[5] = 0;
-                                message[6] = 0;
-
-                                search = "done";
-                                knowEnemyHQ = true;
-                                enemyHQloc = new MapLocation(r[i].location.x, r[i].location.y);
-
-                                rc.submitTransaction(message, 1);
-                            }
-                            else
-                                search = "1";
-                        }
-                    }
-                    if(r.length == 0){
-                        search = "1";
-                    }
-                } else {
-                    for (Direction dir : directions) {
-                        Direction move = rc.getLocation().directionTo(tryHQ);
-                        if (rc.canMove(move) && tryMove(move))
-                            System.out.println("I moved!");
-                        else {
-                            Direction left = move.rotateLeft();
-                            Direction right = move.rotateRight();
-                            if (rc.canMove(left) && tryMove(left))
-                                System.out.println("I moved!");
-                            else if (rc.canMove(right) && tryMove(right))
-                                System.out.println("I moved!");
-                        }
-                    }
-                }
-            }
-            else
-                search = "1";
-        }
-    }
-
-    static void search2() throws GameActionException {
-        int height = rc.getMapHeight();
-        int width = rc.getMapWidth();
-
-        if(search == "1") {
-            // maplocation is opposite on the diagonal x and y axis
-            MapLocation tryHQ = new MapLocation(width - HQloc.x - 1, height - HQloc.y - 1);
-            if((tryHQ.x >= 0 && tryHQ.x < width) && (tryHQ.y >= 0 && tryHQ.y < height)) {
-                if (rc.getLocation().isAdjacentTo(tryHQ)) {
-                    RobotInfo[] r = rc.senseNearbyRobots();
-                    for (int i = 0; i < r.length; i++) {
-                        if (r[i].team == rc.getTeam().opponent()) {
-                            if (r[i].type == RobotType.HQ) {
-                                int[] message = new int[7];
-                                message[0] = 6;
-                                message[1] = r[i].location.x;
-                                message[2] = r[i].location.y;
-                                message[3] = 0;
-                                message[4] = 0;
-                                message[5] = 0;
-                                message[6] = 0;
-
-                                search = "done";
-                                knowEnemyHQ = true;
-                                enemyHQloc = new MapLocation(r[i].location.x, r[i].location.y);
-
-                                rc.submitTransaction(message, 1);
-                            }
-                            else
-                                search = "2";
-                        }
-                    }
-                    if(r.length == 0){
-                        search = "2";
-                    }
-                } else {
-                    for (Direction dir : directions) {
-                        Direction move = rc.getLocation().directionTo(tryHQ);
-                        if (rc.canMove(move) && tryMove(move))
-                            System.out.println("I moved!");
-                        else {
-                            Direction left = move.rotateLeft();
-                            Direction right = move.rotateRight();
-                            if (rc.canMove(left) && tryMove(left))
-                                System.out.println("I moved!");
-                            else if (rc.canMove(right) && tryMove(right))
-                                System.out.println("I moved!");
-                        }
-                    }
-                }
-            }
-            else
-                search = "2";
-        }
-    }
-
-    static void search3() throws GameActionException {
-        int height = rc.getMapHeight();
-        int width = rc.getMapWidth();
-
-        if(search == "2") {
-            // maplocation is opposite hq on y axis
-            MapLocation tryHQ = new MapLocation(HQloc.x , height - HQloc.y - 1);
-            if((tryHQ.x >= 0 && tryHQ.x < width) && (tryHQ.y >= 0 && tryHQ.y < height)) {
-                if (rc.getLocation().isAdjacentTo(tryHQ)) {
-                    RobotInfo[] r = rc.senseNearbyRobots();
-                    for (int i = 0; i < r.length; i++) {
-                        if (r[i].team == rc.getTeam().opponent()) {
-                            if (r[i].type == RobotType.HQ) {
-                                int[] message = new int[7];
-                                message[0] = 6;
-                                message[1] = r[i].location.x;
-                                message[2] = r[i].location.y;
-                                message[3] = 0;
-                                message[4] = 0;
-                                message[5] = 0;
-                                message[6] = 0;
-
-                                search = "done";
-                                knowEnemyHQ = true;
-                                enemyHQloc = new MapLocation(r[i].location.x, r[i].location.y);
-
-                                rc.submitTransaction(message, 1);
-                            }
-                            else
-                                search = "0";
-                        }
-                    }
-                    if(r.length == 0){
-                        search = "0";
-                    }
-                } else {
-                    for (Direction dir : directions) {
-                        Direction move = rc.getLocation().directionTo(tryHQ);
-                        if (rc.canMove(move) && tryMove(move))
-                            System.out.println("I moved!");
-                        else {
-                            Direction left = move.rotateLeft();
-                            Direction right = move.rotateRight();
-                            if (rc.canMove(left) && tryMove(left))
-                                System.out.println("I moved!");
-                            else if (rc.canMove(right) && tryMove(right))
-                                System.out.println("I moved!");
-                        }
-                    }
-                }
-            }
-            else
-                search = "0";
         }
     }
 
