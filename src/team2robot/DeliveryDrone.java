@@ -341,15 +341,15 @@ public class DeliveryDrone extends Robot{
         if (robots.length > 0) {
             for (int i = 0; i < robots.length; i++) {
                 if (robots[i].getTeam() == rc.getTeam() && robots[i].type == RobotType.LANDSCAPER) {
-                    System.out.println("I sense " + robots[i].getID() + "!");
+                    //System.out.println("I sense " + robots[i].getID() + "!");
                     ls_count++;
-                    if (ls_count > 3) {
+                    if (ls_count >= 4) {
                         droneTurn = 0;
                         if (rc.canPickUpUnit(robots[i].getID())) {
                             ls.add(robots[i].getID());
                             if (ls_count == 1) {
                                 int[] message = new int[7];
-                                message[0] = 12;
+                                message[0] = 11;
                                 message[1] = robots[i].getID();
                                 message[2] = 0;
                                 message[3] = 0;
@@ -361,7 +361,7 @@ public class DeliveryDrone extends Robot{
                             }
                             if (ls_count == 2) {
                                 int[] message = new int[7];
-                                message[0] = 13;
+                                message[0] = 12;
                                 message[1] = robots[i].getID();
                                 message[2] = 0;
                                 message[3] = 0;

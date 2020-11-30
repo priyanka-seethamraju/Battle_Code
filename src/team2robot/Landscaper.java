@@ -29,20 +29,21 @@ public class Landscaper extends Robot{
                     knowEnemyHQ = true;
                     //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
                 }
-                if (message[0] == 12 ) {
-                    l=message[1];
-                    //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
-                }
-                if (message[0] == 13 ) {
-                    w=message[1];
-                    //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
-                }
+                //if (message[0] == 8 ) {
+                //    l=message[1];
+                //    System.out.println("l is: " + message[1]);
+                //}
+                //if (message[0] == 9 ) {
+                //    w=message[1];
+                //    System.out.println("w is: " + message[1]);
+                //}
             }
         }
 
-        System.out.println("Two landscapers"+l +w);
-        System.out.println("landscaper id"+rc.getID());
-        if (l != rc.getID() && w!=rc.getID()) {
+        //System.out.println("Two landscapers"+l +w);
+        //System.out.println("landscaper id"+rc.getID());
+        if(rc.getLocation().distanceSquaredTo(HQloc) <= 50){
+        //if (l != rc.getID() && w!=rc.getID()) {
             // move to hq if not already near it
             if (!rc.getLocation().isAdjacentTo(HQloc)) {
                 for (Direction dir : directions) {
@@ -98,8 +99,8 @@ public class Landscaper extends Robot{
             }
         }
 
-        else {
-            System.out.println("k");
+        else if(rc.getLocation().distanceSquaredTo(enemyHQloc) <= 50){
+            //System.out.println("k");
             if (!rc.getLocation().isAdjacentTo(enemyHQloc)) {
                 for (Direction dir : directions) {
                     Direction move = rc.getLocation().directionTo(enemyHQloc);
@@ -121,25 +122,24 @@ public class Landscaper extends Robot{
                 for (int i = 0; i < bots.length; i++) {
 
                     if (bots[i].type == RobotType.HQ) {
-                        System.out.println("I");
+                        //System.out.println("I");
                         if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
-                            System.out.println("!");
+                            //System.out.println("!");
                             rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
                         }
                     }
                 }
                 if (rc.getDirtCarrying() < 3) {
                     if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
-                        System.out.println("!!");
+                        //System.out.println("!!");
                         rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
                     }
                 }
-                for(Direction dir : directions) {
-                    if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
-                        if(rc.canDepositDirt(dir)) {
-                            System.out.println("!!!");
-                            rc.depositDirt(dir);
-                        }
+                if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                    Direction dir = rc.getLocation().directionTo(enemyHQloc);
+                    if(rc.canDepositDirt(dir)) {
+                        //System.out.println("!!!");
+                        rc.depositDirt(dir);
                     }
                 }
             }
