@@ -1,13 +1,19 @@
 package team2robot;
 import battlecode.common.*;
 
+import java.util.ArrayList;
+
 public class Robot {
     static RobotController rc;
     //Communications comms;
     static int turnCount;
+    static int  l;
+    static int w;
     static boolean knowHQ = false;
     static MapLocation HQloc;
     static int minerCount = 0;
+    static int ls_count =0;
+    static ArrayList<Integer> ls= new ArrayList<>();
     static int landscaperCount = 0;
     static int floodHeight = 3;
     static boolean flooding = false;

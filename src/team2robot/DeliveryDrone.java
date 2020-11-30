@@ -81,40 +81,50 @@ public class DeliveryDrone extends Robot{
             job = "findHQ";
         }
 
+
         // set job to picking up cows or enemy
         else if(knowEnemyHQ && !rc.isCurrentlyHoldingUnit()) {
-            if(lastJob == "dropping enemy"){
-                // change jobs if drone spends too much time looking for bot
-                if(droneTurn >= 30){
-                    droneTurn = 0;
-                    job = "pick up enemy";
-                    lastJob = "dropping cows";
+            lastJob ="drop landscapers";
+            if (lastJob == "drop landscapers") {
+                job = "pick up landscapers";
+            } else {
+                if (lastJob == "dropping enemy") {
+                    // change jobs if drone spends too much time looking for bot
+                    if (droneTurn >= 30) {
+                        droneTurn = 0;
+                        job = "pick up enemy";
+                        lastJob = "dropping cows";
+                    } else
+                        job = "pick up cows";
+
+                } else {
+                    // change jobs if drone spends too much time looking for bot
+                    if (droneTurn >= 30) {
+                        droneTurn = 0;
+                        job = "pick up cows";
+                        lastJob = "dropping enemy";
+                    } else
+                        job = "pick up enemy";
                 }
-                else
-                    job = "pick up cows";
-            }
-            else {
-                // change jobs if drone spends too much time looking for bot
-                if(droneTurn >= 30){
-                    droneTurn = 0;
-                    job = "pick up cows";
-                    lastJob = "dropping enemy";
-                }
-                else
-                    job = "pick up enemy";
             }
         }
-
 
         // set job to dropping cows or set job to dropping enemies
         else if(knowEnemyHQ && rc.isCurrentlyHoldingUnit()){
-            if(lastJob == "pick up cows"){
-                job = "dropping cows";
+            lastJob = "pick up landscapers";
+            if(lastJob == "pick up landscapers"){
+                job = "drop landscapers";
             }
             else {
-                job = "dropping enemy";
+                if (lastJob == "pick up cows") {
+                    job = "dropping cows";
+                } else {
+                    job = "dropping enemy";
+                }
             }
         }
+
+
 
         // search for enemy hq
         if(job == "findHQ") {
@@ -273,6 +283,100 @@ public class DeliveryDrone extends Robot{
                     search = "0";
             }
         }
+        //pick up landscapers
+        else if(job == "pick up landscapers") {
+            droneTurn++;
+            // See if there are any landscapers within capturing range
+            RobotInfo[] robots = rc.senseNearbyRobots();
+            if (robots.length > 0) {
+                // Pick up a first robot within range
+                for (int i = 0; i < robots.length; i++) {
+                    // make sure it is a bot we can pickup
+                    if (robots[i].getTeam() != enemy && robots[i].getType() != RobotType.HQ && robots[i].getType() != RobotType.DESIGN_SCHOOL && robots[i].getType() != RobotType.FULFILLMENT_CENTER && robots[i].getType() != RobotType.REFINERY && robots[i].getType() != RobotType.DELIVERY_DRONE && robots[i].getType() == RobotType.LANDSCAPER) {
+                        // if sense the bot then reset drone turn counter and attempt to pick up
+                        ls_count++;
+                        if (ls_count < 3) {
+                            droneTurn = 0;
+                            if (rc.canPickUpUnit(robots[i].getID())) {
+                                ls.add(robots[i].getID());
+                                if(ls_count ==1) {
+                                    int[] message = new int[7];
+                                    message[0] = 8;
+                                    message[1] = robots[i].getID();
+                                    message[2] = 0;
+                                    message[3] = 0;
+                                    message[4] = 0;
+                                    message[5] = 0;
+                                    message[6] = 0;
+
+                                    rc.submitTransaction(message, 1);
+                                }
+                                if(ls_count ==2) {
+                                    int[] message = new int[7];
+                                    message[0] = 9;
+                                    message[1] = robots[i].getID();
+                                    message[2] = 0;
+                                    message[3] = 0;
+                                    message[4] = 0;
+                                    message[5] = 0;
+                                    message[6] = 0;
+
+                                    rc.submitTransaction(message, 1);
+                                }
+                                rc.pickUpUnit(robots[i].getID());
+                                droneTurn = 0;
+                                lastJob = "pick up landscapers";
+                                System.out.println("I picked up " + robots[i].getID() + "!");
+                            }
+                            // attempt to move towards bot if cant reach
+                            else {
+                                MapLocation landscapers = robots[i].getLocation();
+                                for (Direction dir : directions) {
+                                    Direction move = rc.getLocation().directionTo(landscapers);
+                                    if (rc.canMove(move) && tryMove(move))
+                                        System.out.println("I moved!");
+                                    else {
+                                        Direction left = move.rotateLeft();
+                                        Direction right = move.rotateRight();
+                                        if (rc.canMove(left) && tryMove(left))
+                                            System.out.println("I moved!");
+                                        else if (rc.canMove(right) && tryMove(right))
+                                            System.out.println("I moved!");
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            lastJob = "dropping enemy";
+                        }
+                    }
+                    // cant find bots that we can pick up so look for them
+                    else {
+                        for (Direction dir : directions) {
+                            Direction move = rc.getLocation().directionTo(HQloc);
+                            if (rc.canMove(move) && tryMove(move))
+                                System.out.println("I moved!");
+                        }
+                    }
+                }
+            }
+            // no bots here so head to  hq
+            else {
+                for (Direction dir : directions) {
+                    Direction move = rc.getLocation().directionTo(HQloc);
+                    if (rc.canMove(move) && tryMove(move))
+                        System.out.println("I moved!");
+                    else {
+                        Direction left = move.rotateLeft();
+                        Direction right = move.rotateRight();
+                        if (rc.canMove(left) && tryMove(left))
+                            System.out.println("I moved!");
+                        else if (rc.canMove(right) && tryMove(right))
+                            System.out.println("I moved!");
+                    }
+                }
+            }
+        }
 
         // head to hq to find and pick up cows
         else if(job == "pick up cows"){
@@ -407,6 +511,36 @@ public class DeliveryDrone extends Robot{
             }
         }
 
+
+        // drop landscapers near enemy hq
+        else if(job == "drop landscapers"){
+            // attempt to drop cow
+            for (Direction dir : directions) {
+                if (rc.getLocation().isAdjacentTo(enemyHQloc) && rc.canDropUnit(dir)) {
+                    rc.dropUnit(dir.opposite());
+                    lastJob = "drop landscapers";
+                    droneTurn = 0;
+                }
+            }
+            // head to enemy hq. Will know location because we searched first
+            if (knowEnemyHQ) {
+                for (Direction dir : directions) {
+                    Direction move = rc.getLocation().directionTo(enemyHQloc);
+                    if (rc.canMove(move) && tryMove(move))
+                        System.out.println("I moved!");
+                    else {
+                        Direction left = move.rotateLeft();
+                        Direction right = move.rotateRight();
+                        if (rc.canMove(left) && tryMove(left))
+                            System.out.println("I moved!");
+                        else if (rc.canMove(right) && tryMove(right))
+                            System.out.println("I moved!");
+                    }
+                }
+            }
+        }
+
+
         // drop cows on enemy hq
         else if(job == "dropping cows"){
             // attempt to drop cow
@@ -434,6 +568,8 @@ public class DeliveryDrone extends Robot{
                 }
             }
         }
+
+
 
         // drop enemies in flooded tiles
         else{

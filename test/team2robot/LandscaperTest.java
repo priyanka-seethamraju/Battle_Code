@@ -43,22 +43,40 @@ public class LandscaperTest {
         message[4] = 0;
         message[5] = 0;
         message[6] = 0;
+
         when(rc.canSubmitTransaction(message,10)).thenReturn(true);
+
         Transaction[] transaction = new Transaction[2];
         Transaction transaction1 = new Transaction(10,message,99);
+
         transaction[0] = transaction1;
         transaction[1] = transaction1;
+
         when(rc.getBlock(1)).thenReturn(transaction);
         //for(Transaction t : transaction) {
             //when(t.getMessage()).thenReturn(message);
         //}
+//        int[] msg = new int[7];
+//        msg[0] = 6; // this indicates that this message is just for enemy HQ location
+//        msg[1] = rc.getLocation().x;
+//        msg[2] = rc.getLocation().y;
+//        msg[3] = 0;
+//        msg[4] = 0;
+//        msg[5] = 0;
+//        msg[6] = 0;
+//        when(rc.canSubmitTransaction(msg,10)).thenReturn(true);
+//        Transaction transaction2 = new Transaction(10,msg,12);
+//        transaction[0] = transaction2;
+//        transaction[1] = transaction2;
+//        when(rc.getBlock(1)).thenReturn(transaction);
+
         RobotInfo[] robots = {Mockito.mock(RobotInfo.class)};
         when(rc.senseNearbyRobots()).thenReturn(robots);
         when(rc.getTeam()).thenReturn(Team.B);
         when(robots[0].getDirtCarrying()).thenReturn(0);
 
 
-        LandscaperTest.takeTurn();
+    //    LandscaperTest.takeTurn();
         //LandscaperTest.runLandscaper();
     }
 }
