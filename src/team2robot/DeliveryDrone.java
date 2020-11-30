@@ -247,11 +247,6 @@ public class DeliveryDrone extends Robot{
         else if (job == "dropping enemy"){
             drownEnemy();
         }
-
-        // drop landscapers
-        else if (job == "dropping landscapers"){
-            dropLandscaper();
-        }
     }
 
     static void setJob() throws GameActionException {
@@ -395,7 +390,7 @@ public class DeliveryDrone extends Robot{
         }
     }
 
-    static void dropLandscaper() throws GameActionException {
+    /*static void dropLandscaper() throws GameActionException {
         // attempt to drop landscaper
         for (Direction dir : directions) {
             if (rc.getLocation().isAdjacentTo(enemyHQloc) && rc.canDropUnit(dir)) {
@@ -419,7 +414,7 @@ public class DeliveryDrone extends Robot{
                 }
             }
         }
-    }
+    }*/
 
     static void pickUpEnemy(RobotInfo[] robots) throws GameActionException {
         // Pick up a first robot within range
@@ -552,8 +547,8 @@ public class DeliveryDrone extends Robot{
     static void dropCow() throws GameActionException {
         // attempt to drop cow
         for (Direction dir : directions) {
-            if (rc.getLocation().isAdjacentTo(enemyHQloc) && rc.canDropUnit(dir)) {
-                rc.dropUnit(dir.opposite());
+            if (rc.getLocation().isAdjacentTo(enemyHQloc) && rc.canDropUnit(randomDirection())) {
+                rc.dropUnit(randomDirection().opposite());
                 lastJob = "dropping cows";
                 droneTurn = 0;
             }
