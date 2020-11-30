@@ -303,7 +303,7 @@ public class DeliveryDrone extends Robot{
                     lastJob = "dropping enemy";
                 }
                 else
-                    job = "pick up enemy";
+                    job = "pick up landscapers";
             }
         }
 
@@ -432,6 +432,29 @@ public class DeliveryDrone extends Robot{
 
     static void dropLandscapers() throws  GameActionException{
         System.out.println("h");
+        for (Direction dir : directions) {
+            if (rc.getLocation().isAdjacentTo(enemyHQloc) && rc.canDropUnit(dir)) {
+                rc.dropUnit(dir.opposite());
+                lastJob = "drop landscapers";
+                droneTurn = 0;
+            }
+        }
+        // head to enemy hq. Will know location because we searched first
+        if (knowEnemyHQ) {
+            for (Direction dir : directions) {
+                Direction move = rc.getLocation().directionTo(enemyHQloc);
+                if (rc.canMove(move) && tryMove(move))
+                    System.out.println("I moved!");
+                else {
+                    Direction left = move.rotateLeft();
+                    Direction right = move.rotateRight();
+                    if (rc.canMove(left) && tryMove(left))
+                        System.out.println("I moved!");
+                    else if (rc.canMove(right) && tryMove(right))
+                        System.out.println("I moved!");
+                }
+            }
+        }
     }
 
     static void pickUpEnemy(RobotInfo[] robots) throws GameActionException {
