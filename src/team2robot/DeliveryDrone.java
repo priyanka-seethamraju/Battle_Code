@@ -32,8 +32,13 @@ public class DeliveryDrone extends Robot{
         // check messages for flooded, enemy hq and hq locations
         getMessages();
 
-        // scan near team HQ to check for enemies
-        enemiesAtHQ();
+
+        if(!rc.isCurrentlyHoldingUnit() && rc.getLocation().distanceSquaredTo(HQloc) <= 50) {
+            // scan near team HQ to check for enemies
+            enemiesAtHQ();
+            // check if we need to send landscapers to enemy hq
+            missionBuryHQ();
+        }
 
         //set job
         setJob();
@@ -92,8 +97,13 @@ public class DeliveryDrone extends Robot{
         }
 
         // drop enemies in flooded tiles
-        else{
+        else if (job == "dropping enemy"){
             drownEnemy();
+        }
+
+        // drop landscapers
+        else if (job == "dropping landscapers"){
+            dropLandscaper();
         }
     }
 
@@ -309,15 +319,126 @@ public class DeliveryDrone extends Robot{
 
     static void enemiesAtHQ() throws GameActionException {
         //System.out.println(rc.getLocation().distanceSquaredTo(HQloc));
-        if(rc.getLocation().distanceSquaredTo(HQloc) <= 50) {
-            RobotInfo[] robots = rc.senseNearbyRobots();
-            for (RobotInfo rb : robots) {
-                if (rb.getTeam() != rc.getTeam()) {
-                    job = "pick up enemy";
-                    System.out.println("ENEMY!!");
+        RobotInfo[] robots = rc.senseNearbyRobots();
+        for (RobotInfo rb : robots) {
+            if (rb.getTeam() != rc.getTeam()) {
+                job = "pick up enemy";
+                System.out.println("ENEMY!!");
+            }
+        }
+    }
+
+    static void missionBuryHQ() throws GameActionException {
+        //RobotInfo[] bot = rc.senseNearbyRobots(rc.getLocation(), 1, rc.getTeam());
+        //if(rc.isCurrentlyHoldingUnit() && bot[0].type == RobotType.LANDSCAPER) {
+        //    dropLandscaper();
+        //}
+        RobotInfo[] robots = rc.senseNearbyRobots();
+        pickUpLandscaper(robots);
+    }
+
+    static void pickUpLandscaper(RobotInfo[] robots) throws GameActionException {
+        if (robots.length > 0) {
+            for (int i = 0; i < robots.length; i++) {
+                if (robots[i].getTeam() == rc.getTeam() && robots[i].type == RobotType.LANDSCAPER) {
+                    System.out.println("I sense " + robots[i].getID() + "!");
+                    ls_count++;
+                    if (ls_count > 3) {
+                        droneTurn = 0;
+                        if (rc.canPickUpUnit(robots[i].getID())) {
+                            ls.add(robots[i].getID());
+                            if (ls_count == 1) {
+                                int[] message = new int[7];
+                                message[0] = 12;
+                                message[1] = robots[i].getID();
+                                message[2] = 0;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                rc.submitTransaction(message, 1);
+                            }
+                            if (ls_count == 2) {
+                                int[] message = new int[7];
+                                message[0] = 13;
+                                message[1] = robots[i].getID();
+                                message[2] = 0;
+                                message[3] = 0;
+                                message[4] = 0;
+                                message[5] = 0;
+                                message[6] = 0;
+
+                                rc.submitTransaction(message, 1);
+                            }
+                            rc.pickUpUnit(robots[i].getID());
+                            droneTurn = 0;
+                            lastJob = "pick up cows";
+                            //job = "dropping cows";
+                            System.out.println("I picked up " + robots[i].getID() + "!");
+                        }
+                        // attempt to move towards bot if cant reach
+                        else {
+                            MapLocation landscapers = robots[i].getLocation();
+                            for (Direction dir : directions) {
+                                Direction move = rc.getLocation().directionTo(landscapers);
+                                if (rc.canMove(move) && tryMove(move))
+                                    System.out.println("I moved!");
+                                else {
+                                    Direction left = move.rotateLeft();
+                                    Direction right = move.rotateRight();
+                                    if (rc.canMove(left) && tryMove(left))
+                                        System.out.println("I moved!");
+                                    else if (rc.canMove(right) && tryMove(right))
+                                        System.out.println("I moved!");
+                                }
+                            }
+                        }
+                    } else {
+                        //lastJob = "dropping enemy";
+                    }
                 }
-                //else
-                    //System.out.println("Not a enemy!");
+            }
+        }
+        else {
+            for (Direction dir : directions) {
+                Direction move = rc.getLocation().directionTo(HQloc);
+                if (rc.canMove(move) && tryMove(move))
+                    System.out.println("I moved!");
+                else {
+                    Direction left = move.rotateLeft();
+                    Direction right = move.rotateRight();
+                    if (rc.canMove(left) && tryMove(left))
+                        System.out.println("I moved!");
+                    else if (rc.canMove(right) && tryMove(right))
+                        System.out.println("I moved!");
+                }
+            }
+        }
+    }
+
+    static void dropLandscaper() throws GameActionException {
+        // attempt to drop landscaper
+        for (Direction dir : directions) {
+            if (rc.getLocation().isAdjacentTo(enemyHQloc) && rc.canDropUnit(dir)) {
+                rc.dropUnit(dir.opposite());
+                lastJob = "dropping cows";
+            }
+        }
+        // head to enemy hq. Will know location because we searched first
+        if (knowEnemyHQ) {
+            for (Direction dir : directions) {
+                Direction move = rc.getLocation().directionTo(enemyHQloc);
+                if (rc.canMove(move) && tryMove(move))
+                    System.out.println("I moved!");
+                else {
+                    Direction left = move.rotateLeft();
+                    Direction right = move.rotateRight();
+                    if (rc.canMove(left) && tryMove(left))
+                        System.out.println("I moved!");
+                    else if (rc.canMove(right) && tryMove(right))
+                        System.out.println("I moved!");
+                }
             }
         }
     }

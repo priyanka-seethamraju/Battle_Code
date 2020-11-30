@@ -15,70 +15,135 @@ public class Landscaper extends Robot{
 
         // get transaction message to find location of hq
         int num = rc.getRoundNum();
-        for(int i = 1; i < num; i++){
+        for (int i = 1; i < num; i++) {
             Transaction[] transaction = rc.getBlock(num - i);
-            for(Transaction t : transaction) {
+            for (Transaction t : transaction) {
                 int[] message = t.getMessage();
-                if(message[0] == 1 && !knowHQ){
+                if (message[0] == 1 && !knowHQ) {
                     HQloc = new MapLocation(message[1], message[2]);
                     knowHQ = true;
+                    //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
+                }
+                if (message[0] == 6 && !knowEnemyHQ) {
+                    enemyHQloc = new MapLocation(message[1], message[2]);
+                    knowEnemyHQ = true;
+                    //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
+                }
+                if (message[0] == 12 ) {
+                    l=message[1];
+                    //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
+                }
+                if (message[0] == 13 ) {
+                    w=message[1];
                     //System.out.println("HQ Location: " + message[1] + ", " + message[2]);
                 }
             }
         }
 
-        // move to hq if not already near it
-        if(!rc.getLocation().isAdjacentTo(HQloc)){
-            for (Direction dir : directions) {
-                Direction move = rc.getLocation().directionTo(HQloc);
-                if (rc.canMove(move) && tryMove(move))
-                    System.out.println("I moved!");
-                else {
-                    Direction left = move.rotateLeft();
-                    Direction right = move.rotateRight();
-                    if (rc.canMove(left) && tryMove(left))
+        System.out.println("Two landscapers"+l +w);
+        System.out.println("landscaper id"+rc.getID());
+        if (l != rc.getID() && w!=rc.getID()) {
+            // move to hq if not already near it
+            if (!rc.getLocation().isAdjacentTo(HQloc)) {
+                for (Direction dir : directions) {
+                    Direction move = rc.getLocation().directionTo(HQloc);
+                    if (rc.canMove(move) && tryMove(move))
                         System.out.println("I moved!");
-                    else if (rc.canMove(right) && tryMove(right))
+                    else {
+                        Direction left = move.rotateLeft();
+                        Direction right = move.rotateRight();
+                        if (rc.canMove(left) && tryMove(left))
+                            System.out.println("I moved!");
+                        else if (rc.canMove(right) && tryMove(right))
+                            System.out.println("I moved!");
+                    }
+                }
+            }
+
+            // if the block on is already a wall then move
+            if (rc.senseElevation(rc.getLocation()) == rc.senseElevation(HQloc) + floodHeight) {
+                for (Direction dir : directions) {
+                    if (rc.canMove(randomDirection()) && tryMove(randomDirection()))
                         System.out.println("I moved!");
                 }
             }
-        }
 
-        // if the block on is already a wall then move
-        if(rc.senseElevation(rc.getLocation()) == rc.senseElevation(HQloc) + floodHeight){
-            for (Direction dir : directions) {
-                if (rc.canMove(randomDirection()) && tryMove(randomDirection()))
-                    System.out.println("I moved!");
-            }
-        }
-
-        // if near hq dig and deposit dirt around it to build wall
-        if(rc.getLocation().isAdjacentTo(HQloc)) {
-            RobotInfo[] bots = rc.senseNearbyRobots();
-            for(int i = 0; i < bots.length; i++){
-                if(bots[i].team == rc.getTeam()){
-                    if(bots[i].dirtCarrying > 0 && bots[i].type == RobotType.HQ){
-                        if (rc.canDigDirt(rc.getLocation().directionTo(HQloc))) {
-                            System.out.println("I dug!");
-                            rc.digDirt(rc.getLocation().directionTo(HQloc));
+            // if near hq dig and deposit dirt around it to build wall
+            if (rc.getLocation().isAdjacentTo(HQloc)) {
+                RobotInfo[] bots = rc.senseNearbyRobots();
+                for (int i = 0; i < bots.length; i++) {
+                    if (bots[i].team == rc.getTeam()) {
+                        if (bots[i].dirtCarrying > 0 && bots[i].type == RobotType.HQ) {
+                            if (rc.canDigDirt(rc.getLocation().directionTo(HQloc))) {
+                                System.out.println("I dug!");
+                                rc.digDirt(rc.getLocation().directionTo(HQloc));
+                            }
+                        }
+                    }
+                }
+                if (rc.getDirtCarrying() < 3) {
+                    if (rc.canDigDirt(rc.getLocation().directionTo(HQloc).opposite())) {
+                        System.out.println("I dug!");
+                        rc.digDirt(rc.getLocation().directionTo(HQloc).opposite());
+                    }
+                }
+                if (rc.getDirtCarrying() == 3) {
+                    if (rc.senseElevation(rc.getLocation()) < rc.senseElevation(HQloc) + floodHeight) {
+                        if (rc.canDepositDirt(Direction.CENTER)) {
+                            System.out.println("I deposited!");
+                            rc.depositDirt(Direction.CENTER);
                         }
                     }
                 }
             }
-            if (rc.getDirtCarrying() < 3) {
-                if (rc.canDigDirt(rc.getLocation().directionTo(HQloc).opposite())) {
-                    System.out.println("I dug!");
-                    rc.digDirt(rc.getLocation().directionTo(HQloc).opposite());
+        }
+
+        else {
+            System.out.println("k");
+            if (!rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                for (Direction dir : directions) {
+                    Direction move = rc.getLocation().directionTo(enemyHQloc);
+                    if (rc.canMove(move) && tryMove(move))
+                        System.out.println("I moved!");
+                    else {
+                        Direction left = move.rotateLeft();
+                        Direction right = move.rotateRight();
+                        if (rc.canMove(left) && tryMove(left))
+                            System.out.println("I moved!");
+                        else if (rc.canMove(right) && tryMove(right))
+                            System.out.println("I moved!");
+                    }
                 }
             }
-            if (rc.getDirtCarrying() == 3) {
-                if (rc.senseElevation(rc.getLocation()) < rc.senseElevation(HQloc) + floodHeight) {
-                    if (rc.canDepositDirt(Direction.CENTER)) {
-                        System.out.println("I deposited!");
-                        rc.depositDirt(Direction.CENTER);
+
+            if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                RobotInfo[] bots = rc.senseNearbyRobots();
+                for (int i = 0; i < bots.length; i++) {
+
+                    if (bots[i].type == RobotType.HQ) {
+                        System.out.println("I");
+                        if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
+                            System.out.println("!");
+                            rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
+                        }
+                    }
+                }
+                if (rc.getDirtCarrying() < 3) {
+                    if (rc.canDigDirt(rc.getLocation().directionTo(enemyHQloc).opposite())) {
+                        System.out.println("!!");
+                        rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
+                    }
+                }
+                for(Direction dir : directions) {
+                    if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                        if(rc.canDepositDirt(dir)) {
+                            System.out.println("!!!");
+                            rc.depositDirt(dir);
+                        }
                     }
                 }
             }
         }
+
     }
 }
