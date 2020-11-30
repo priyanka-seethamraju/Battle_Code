@@ -282,6 +282,7 @@ public class DeliveryDrone extends Robot{
 
         // set job to picking up cows or enemy
         else if(knowEnemyHQ && !rc.isCurrentlyHoldingUnit()) {
+            job = "pick up landscapers";
             if(lastJob == "dropping enemy"){
                 // change jobs if drone spends too much time looking for bot
                 if(droneTurn >= 20){
@@ -290,16 +291,14 @@ public class DeliveryDrone extends Robot{
                     lastJob = "dropping cows";
                 }
                 else
-                    job = "pick up cows";
+                    job = "pick up landscapers";
             }
-            else if(lastJob == "drop landscapers"){
-                job = "pick up landscapers";
-            }
+
             else {
                 // change jobs if drone spends too much time looking for bot
                 if(droneTurn >= 25){
                     droneTurn = 0;
-                    job = "pick up cows";
+                    job = "pick up landscapers";
                     lastJob = "dropping enemy";
                 }
                 else
@@ -309,11 +308,12 @@ public class DeliveryDrone extends Robot{
 
         // set job to dropping cows or set job to dropping enemies
         else if(knowEnemyHQ && rc.isCurrentlyHoldingUnit()){
-            if(lastJob == "pick up cows"){
-                job = "dropping cows";
-            }
-            else if (lastJob == "pick up landscapers"){
+
+             if (lastJob == "pick up landscapers"){
                 job = "drop landscapers";
+            }
+            else if(lastJob == "pick up cows"){
+                job = "dropping cows";
             }
             else {
                 job = "dropping enemy";
@@ -337,6 +337,7 @@ public class DeliveryDrone extends Robot{
     }
 
     static void pickUpLandscapers() throws GameActionException{
+        System.out.println("f");
         droneTurn++;
         // See if there are any landscapers within capturing range
         RobotInfo[] robots = rc.senseNearbyRobots();
@@ -346,10 +347,14 @@ public class DeliveryDrone extends Robot{
                 // make sure it is a bot we can pickup
                 if (robots[i].getTeam() == rc.getTeam() && robots[i].getType() != RobotType.HQ && robots[i].getType() != RobotType.DESIGN_SCHOOL && robots[i].getType() != RobotType.FULFILLMENT_CENTER && robots[i].getType() != RobotType.REFINERY && robots[i].getType() != RobotType.DELIVERY_DRONE && robots[i].getType() == RobotType.LANDSCAPER) {
                     // if sense the bot then reset drone turn counter and attempt to pick up
-                    ls_count++;
+                    System.out.println("priya");
+
+                    System.out.println(ls_count);
                     if (ls_count < 3) {
+                        System.out.println("p1");
                         droneTurn = 0;
                         if (rc.canPickUpUnit(robots[i].getID())) {
+                            System.out.println("p");
                             ls.add(robots[i].getID());
                             if(ls_count ==1) {
                                 int[] message = new int[7];
@@ -376,7 +381,9 @@ public class DeliveryDrone extends Robot{
                                 rc.submitTransaction(message, 1);
                             }
                             rc.pickUpUnit(robots[i].getID());
+                            ls_count++;
                             droneTurn = 0;
+                            System.out.println("sg");
                             lastJob = "pick up landscapers";
                             System.out.println("I picked up " + robots[i].getID() + "!");
                         }
