@@ -134,12 +134,14 @@ public class Landscaper extends Robot{
                         rc.digDirt(rc.getLocation().directionTo(enemyHQloc).opposite());
                     }
                 }
-                if (rc.getDirtCarrying() == 3) {
-                        if (rc.canDepositDirt(rc.getLocation().directionTo(enemyHQloc))) {
-                            System.out.println("!!!");
-                            rc.depositDirt(rc.getLocation().directionTo(enemyHQloc));
-                        }
-                    }
+                      for(Direction dir : directions) {
+                          if (rc.getLocation().isAdjacentTo(enemyHQloc)) {
+                              if(rc.canDepositDirt(dir)) {
+                                  System.out.println("!!!");
+                                  rc.depositDirt(dir);
+                              }
+                          }
+                      }
             }
         }
 

@@ -84,10 +84,8 @@ public class DeliveryDrone extends Robot{
 
         // set job to picking up cows or enemy
         else if(knowEnemyHQ && !rc.isCurrentlyHoldingUnit()) {
-            lastJob ="drop landscapers";
-            if (lastJob == "drop landscapers") {
-                job = "pick up landscapers";
-            } else {
+
+
                 if (lastJob == "dropping enemy") {
                     // change jobs if drone spends too much time looking for bot
                     if (droneTurn >= 30) {
@@ -104,9 +102,9 @@ public class DeliveryDrone extends Robot{
                         job = "pick up cows";
                         lastJob = "dropping enemy";
                     } else
-                        job = "pick up enemy";
+                        job = "pick up landscapers";
                 }
-            }
+
         }
 
         // set job to dropping cows or set job to dropping enemies
