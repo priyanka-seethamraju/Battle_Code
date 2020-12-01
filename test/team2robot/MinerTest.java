@@ -6,7 +6,6 @@ import scala.collection.convert.Wrappers;
 import team2robot.RobotPlayer;
 import org.junit.*;
 import org.mockito.*;
-import team2robot.Miner;
 
 import java.lang.reflect.MalformedParameterizedTypeException;
 import java.util.ArrayList;
