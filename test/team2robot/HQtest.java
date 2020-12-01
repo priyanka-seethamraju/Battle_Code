@@ -117,7 +117,7 @@ public class HQtest {
         when(rc.getRoundNum()).thenReturn(9);
         when(rc.getTeamSoup()).thenReturn(150);
         when(rc.senseElevation(rc.getLocation())).thenReturn(1);
-
+        HQtest.knowHQ = false;
 
         assertEquals(true, HQtest.knowHQ());
     }
