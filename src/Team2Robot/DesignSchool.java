@@ -34,7 +34,7 @@ public class DesignSchool extends Robot{
 
     public static boolean buildLandscaper() throws GameActionException{
         for (Direction dir : directions){
-            if(landscaperCount < 8){
+            if(landscaperCount < 2){
                 if(tryBuild(RobotType.LANDSCAPER, dir)){
                     System.out.println("I built a Landscaper!");
                     landscaperCount++;

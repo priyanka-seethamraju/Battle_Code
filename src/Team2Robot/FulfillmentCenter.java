@@ -28,7 +28,7 @@ public class FulfillmentCenter extends Robot{
 
     static boolean buildDrone() throws GameActionException{
         for (Direction dir : directions) {
-            if (droneCount < 4) {
+            if (droneCount < 2) {
                 if (tryBuild(RobotType.DELIVERY_DRONE, dir)) {
                     droneCount++;
                     return true;
