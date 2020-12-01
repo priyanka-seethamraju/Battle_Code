@@ -9,10 +9,10 @@ public class DeliveryDrone extends Robot{
         super(r);
     }
 
-    public void takeTurn() throws GameActionException {
+    public void takeTurn() throws GameActionException { 
         runDeliveryDrone();
     }
-
+    
     static void runDeliveryDrone() throws GameActionException {
         //System.out.println("enemy team is :" + enemy);
         //System.out.println("Our team is :" + ourTeam);
@@ -25,7 +25,7 @@ public class DeliveryDrone extends Robot{
         //System.out.println("Bytecodes used: " + Clock.getBytecodeNum());
         //System.out.println("Bytecodes left: " + Clock.getBytecodesLeft());
         //System.out.println("Cool down turns left: " + rc.getCooldownTurns());
-
+        
         // if dont know flooded location then sense nearby for flood
         getFlood();
 
@@ -570,7 +570,7 @@ public class DeliveryDrone extends Robot{
             }
         }
     }
-
+    
     static void headToEnemyHQ() throws GameActionException {
         for (Direction dir : directions) {
             Direction move = rc.getLocation().directionTo(enemyHQloc);
@@ -586,7 +586,7 @@ public class DeliveryDrone extends Robot{
             }
         }
     }
-
+    
     static void headToTeamHQ() throws GameActionException {
         Direction move = rc.getLocation().directionTo(HQloc);
         if (rc.canMove(move) && tryMove(move))
@@ -600,7 +600,7 @@ public class DeliveryDrone extends Robot{
                 System.out.println("I moved!");
         }
     }
-
+    
     static void headToFlood() throws GameActionException {
         for (Direction dir : directions) {
             Direction move = rc.getLocation().directionTo(floodLoc);
@@ -637,7 +637,7 @@ public class DeliveryDrone extends Robot{
             }
         }
     }
-
+    
     static void getMessages() throws GameActionException {
         int num = rc.getRoundNum();
         for (int i = 1; i < num; i++) {
