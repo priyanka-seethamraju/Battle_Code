@@ -6,7 +6,7 @@ public class Robot {
     //Communications comms;
     static int turnCount;
     static boolean knowHQ = false;
-    static MapLocation HQloc = null;
+    static MapLocation HQloc;
     static int minerCount = 0;
     static int landscaperCount = 0;
     static int floodHeight = 3;

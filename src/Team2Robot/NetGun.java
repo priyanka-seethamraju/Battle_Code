@@ -1,7 +1,7 @@
 package team2robot;
 import battlecode.common.*;
 
-public class NetGun extends Robot{
+public class NetGun extends Robot {
 
     public NetGun(RobotController r){
         super(r);
