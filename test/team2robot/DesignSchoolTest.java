@@ -71,8 +71,9 @@ public class DesignSchoolTest {
         }
         System.out.println("Soup is " + rc.getTeamSoup());
         DesignSchoolTest.landscaperCount = 0;
-        assertEquals(true, DesignSchoolTest.buildLandscaper());
-        assertEquals(true, DesignSchoolTest.buildLandscaper());
+        for(int i = 0; i < 8; i ++) {
+            assertEquals(true, DesignSchoolTest.buildLandscaper());
+        }
         assertEquals(false, DesignSchoolTest.buildLandscaper());
     }
 
@@ -90,7 +91,7 @@ public class DesignSchoolTest {
             when(rc.canBuildRobot(RobotType.LANDSCAPER, dir)).thenReturn(true);
         }
         System.out.println("Soup is " + rc.getTeamSoup());
-        DesignSchoolTest.landscaperCount = 2;
+        DesignSchoolTest.landscaperCount = 8;
         assertEquals(false, DesignSchoolTest.buildLandscaper());
     }
 
