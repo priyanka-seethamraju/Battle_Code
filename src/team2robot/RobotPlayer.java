@@ -63,9 +63,7 @@ public strictfp class RobotPlayer {
 
         /*
         RobotPlayer.rc = rc;
-
         turnCount = 0;
-
         System.out.println("I'm a " + rc.getType() + " and I just got created!");
         while (true) {
             turnCount += 1;
@@ -85,15 +83,12 @@ public strictfp class RobotPlayer {
                     case DELIVERY_DRONE:     DeliveryDrone.runDeliveryDrone();     break;
                     case NET_GUN:            NetGun.runNetGun();            break;
                 }
-
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
-
             } catch (Exception e) {
                 System.out.println(rc.getType() + " Exception");
                 e.printStackTrace();
             }
         }
     }
-
 */
