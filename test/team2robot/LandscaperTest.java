@@ -50,7 +50,7 @@ public class LandscaperTest {
         transaction[1] = transaction1;
         when(rc.getBlock(1)).thenReturn(transaction);
         //for(Transaction t : transaction) {
-        //when(t.getMessage()).thenReturn(message);
+            //when(t.getMessage()).thenReturn(message);
         //}
         RobotInfo[] robots = {Mockito.mock(RobotInfo.class)};
         when(rc.senseNearbyRobots()).thenReturn(robots);
